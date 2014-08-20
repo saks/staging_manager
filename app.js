@@ -12,7 +12,6 @@ var users = require('./routes/users');
 var servers = require('./routes/servers');
 
 var app = express();
-require('express-repl')(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
