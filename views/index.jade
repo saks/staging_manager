@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  script(type='text/x-handlebars')
+    .container
+      .pricing-tables
+        h1#detached-wide.
+          Detached - Wide
+        {{outlet}}
+
+  script(type='text/x-handlebars', id='index')
+    .row
+      {{#each server in model}}
+      .col-sm-4.col-md-4
+        .plan
+          .head
+            h2
+              {{server.name}}
+          ul.item-list
+            li
+              strong.
+                ip address: {{server.ip_address}}
+      {{/each}}
