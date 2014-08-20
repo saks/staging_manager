@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var Server = new Schema({
-  name: String,
+  name:       String,
   ip_address: String,
 });
 
