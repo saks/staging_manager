@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "make test"
   },
   "engines": {
     "node": "0.10.x"
@@ -18,10 +19,15 @@
     "morgan": "~1.0.0",
     "cookie-parser": "~1.0.1",
     "body-parser": "~1.0.0",
-    "debug": "~0.7.4",
     "jade": "~1.3.0",
     "mongoose": "*",
-    "logfmt": "~1.1.2"
+    "logfmt": "~1.1.2",
+    "debug": "~0.7.4",
+    "expect.js": "*",
+    "mocha": "*",
+    "should": "*",
+    "factory-lady": "*",
+    "supertest": "*"
   },
   "bugs": {
     "url": "https://github.com/saks/staging_manager/issues"
