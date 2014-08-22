@@ -21,7 +21,6 @@ app.use bodyParser.json()
 app.use bodyParser.urlencoded()
 app.use cookieParser()
 app.use express.static(path.join(__dirname, 'public'))
-app.use logfmt.requestLogger()
 
 app.use '/',        routes
 app.use '/users',   users
@@ -52,6 +51,7 @@ if app.get('env') is 'development'
 # production error handler
 # no stacktraces leaked to user
 app.use (err, req, res, next) ->
+  app.use logfmt.requestLogger()
   res.status err.status or 500
   res.render 'error',
     message: err.message

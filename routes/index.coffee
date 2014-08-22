@@ -8,4 +8,8 @@ router.get '/', (req, res) ->
 
   return
 
+# GET heartbeat
+router.get '/heartbeat', (request, response) ->
+  response.json 200, 'OK'
+
 module.exports = router
