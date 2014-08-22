@@ -1,4 +1,4 @@
-// mongo staging_manager seed.js
+// mongo staging_manager_development seed.js
 
 db.dropDatabase();
 
