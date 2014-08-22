@@ -1,10 +1,7 @@
 REPORTER=spec
-TESTS=$(shell find ./tests -type f -name "*.js")
+TESTS=$(shell find ./test -type f -name "*.coffee")
 
 test:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--require should \
-		--reporter $(REPORTER) \
-		$(TESTS)
+	@NODE_ENV=test ./node_modules/.bin/mocha $(TESTS)
 
 .PHONY: test
