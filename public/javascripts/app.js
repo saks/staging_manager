@@ -1,7 +1,7 @@
 var App = Ember.Application.create();
 
 App.Router.map(function() {
-  // put your routes here
+  this.resource('servers', { path: '/' })
 });
 
 
@@ -15,3 +15,18 @@ App.IndexRoute = Ember.Route.extend({
     return this.store.find('server');
   }
 });
+
+App.ServersController = Ember.Controller.extend({
+  actions: {
+    lock: function(server) {
+      // TODO: lock server and sync with db
+    }
+  }
+})
+
+App.ServersRoute = Ember.Route.extend({
+  model: function() {
+    return this.store.find('server');
+  }
+});
+

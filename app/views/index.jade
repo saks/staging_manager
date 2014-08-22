@@ -8,7 +8,7 @@ block content
           Detached - Wide
         {{outlet}}
 
-  script(type='text/x-handlebars', id='index')
+  script(type='text/x-handlebars', id='servers')
     .row
       {{#each server in model}}
       .col-sm-4.col-md-4
@@ -19,5 +19,7 @@ block content
           ul.item-list
             li
               strong.
-                ip address: {{server.ip_address}}
+                ip: {{server.ip_address}}
+            li.
+              <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
       {{/each}}
