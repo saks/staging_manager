@@ -25,7 +25,6 @@
     "coffee-script": "*",
     "logfmt": "~1.1.2",
     "debug": "~0.7.4",
-    "debugger": "*",
     "expect.js": "*",
     "database-cleaner": "*",
     "mocha": "*",
