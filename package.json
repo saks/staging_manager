@@ -21,23 +21,25 @@
     "cookie-parser": "~1.0.1",
     "body-parser": "~1.0.0",
     "jade": "~1.3.0",
-    "mongoose": "*",
+    "mongoose": "~3.8.15",
     "coffee-script": "*",
     "logfmt": "~1.1.2",
     "debug": "~0.7.4",
     "expect.js": "*",
     "database-cleaner": "*",
-    "mocha": "*",
     "should": "*",
     "factory-lady": "*",
-    "supertest": "*"
+    "promise": "~5.0.0"
   },
   "bugs": {
     "url": "https://github.com/saks/staging_manager/issues"
   },
   "description": "ERROR: No README data found!",
   "main": "app.coffee",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "~1.21.4",
+    "supertest": "~0.13.0"
+  },
   "author": "saksmlz",
   "license": "MIT"
 }
