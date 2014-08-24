@@ -4,18 +4,15 @@ Schema   = mongoose.Schema
 ServerSchema = new Schema({
   name:       String,
   ip_address: String,
+  locked:     Boolean,
 })
 
-ServerSchema.statics.allAsJson = (callback) ->
-  result = { servers: [] }
-
-  @find (err, servers) ->
-    servers.forEach (server) ->
-      result.servers.push
-        id:         server.id
-        name:       server.name
-        ip_address: server.ip_address
-
-    callback result
+ServerSchema.options.toJSON = {
+  transform: (doc, ret, options) ->
+    ret.id = ret._id
+    delete ret._id
+    delete ret.__v
+    ret
+}
 
 mongoose.model 'Server', ServerSchema
