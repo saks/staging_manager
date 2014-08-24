@@ -7,11 +7,12 @@ describe 'Server model', ->
   beforeEach (done) ->
     Server.collection.remove -> done()
 
-  it 'should return servers list as json', (done) ->
+  it 'should return servers list as correct json', (done) ->
     Factory.create 'server', ->
       Factory.create 'server', ->
-        Server.allAsJson (document) ->
-          servers = document.servers
+        Server.find (err, models) ->
+          json    = JSON.stringify models
+          servers = JSON.parse json
           server  = servers[0]
 
           expect(servers).to.be.ok()
@@ -20,4 +21,4 @@ describe 'Server model', ->
           expect(server.name).to.eql 'staging 1'
           expect(server.ip_address).to.be.ok()
 
-    done()
+      done()
