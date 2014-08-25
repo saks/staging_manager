@@ -1,38 +1,9 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:100,400,300,600,700);
+/* @import url(http://fonts.googleapis.com/css?family=Open+Sans:100,400,300,600,700); */
 /*
 
 Author: Rashid Shafique | rmughal@gmail.com
 
 */
-body {
-  background: #eaeaea !important;
-  padding: 90px 0 0 0;
-  min-height: 900px;
-  color: #434a54; }
-
-body * {
-  font-family: 'Open Sans';
-  font-weight: 100; }
-
-.navbar {
-  box-shadow: 0 2px 2px rgba(10, 10, 10, 0.06);
-  -moz-box-shadow: 0 2px 2px rgba(10, 10, 10, 0.06);
-  -webkit-box-shadow: 0 2px 2px rgba(10, 10, 10, 0.06);
-  border: none;
-  background: #fff; }
-  .navbar ul > li > a {
-    font-weight: 600;
-    padding: 26px;
-    color: #434a54;
-    font-size: 12px;
-    text-transform: uppercase; }
-  .navbar .container .navbar-brand {
-    margin-left: 0px;
-    padding: 25px; }
-
-.main-title {
-  text-align: center; }
-
 .pricing-tables {
   padding: 20px; }
   .pricing-tables h1 {
@@ -121,6 +92,7 @@ body * {
       line-height: 22px;
       margin-bottom: 15px;
       font-size: 14px;
+      color: #333;
       font-weight: 400; }
       .plan ul li a {
         text-decoration: underline;
