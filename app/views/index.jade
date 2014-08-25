@@ -1,15 +1,35 @@
 extends layout
 
 block content
-  script(type='text/x-handlebars')
-    .container
-      .pricing-tables
-        h1#detached-wide.
-          Servers list
-        {{outlet}}
+  script(type='text/x-handlebars' id='application')
+    .site-wrapper-inner
+      .cover-container
+        .masthead.clearfix
+          .inner
+            h3.masthead-brand.
+              Staging Server Manager
+            ul.nav.masthead-nav
+              li
+                a(href='#').
+                  Logout
+
+        .inner.cover.
+          {{outlet}}
+
+        .mastfoot
+          .inner
+            p.
+              powered by saksmlz
+
+  script(type='text/x-handlebars', id='login')
+    h1.cover-heading.
+      Share your servers
+    p.lead
+      a.btn.btn-default.btn-lg(href='/auth').
+        Login
 
   script(type='text/x-handlebars', id='servers')
-    .row
+    .row.
       {{#each server in model}}
       .col-sm-4.col-md-4
         .plan
