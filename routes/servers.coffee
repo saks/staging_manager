@@ -20,9 +20,9 @@ router.put '/:id', (request, response) ->
     if not findError
       serverAttributes = request.body.server
 
-      server.locked          = serverAttributes.locked
-      server.locked_by_id    = serverAttributes.locked_by_id
-      server.locked_by_email = serverAttributes.locked_by_email
+      server.locked         = serverAttributes.locked
+      server.locked_by_id   = serverAttributes.locked_by_id
+      server.locked_by_name = serverAttributes.locked_by_name
 
       server.save (saveError, updatedServer, numberAffected) ->
         response.status(406) unless 1 is numberAffected

@@ -42,7 +42,7 @@ App.Server = DS.Model.extend({
   ip_address: DS.attr('string'),
   locked    : DS.attr('boolean'),
   locked_by_id : DS.attr('number'),
-  locked_by_email : DS.attr('string'),
+  locked_by_name : DS.attr('string'),
 });
 
 App.ServersController = Ember.Controller.extend({
@@ -52,15 +52,15 @@ App.ServersController = Ember.Controller.extend({
 
       server.set('locked', true);
       server.set('locked_by_id', currentUser.github_user_id);
-      server.set('locked_by_email', currentUser.email);
+      server.set('locked_by_name', currentUser.name);
       server.save().catch(function() {
-        alert('Cannot lock! Server was locked by ' + server.get('locked_by_email') + ' earlier!')
+        alert('Cannot lock! Server was locked by ' + server.get('locked_by_name') + ' earlier!')
       })
     },
     unlock: function(server) {
       server.set('locked', false);
       server.set('locked_by_id', null);
-      server.set('locked_by_email', null);
+      server.set('locked_by_name', null);
       server.save();
     },
   }
