@@ -4,11 +4,16 @@ mongoose = require 'mongoose'
 User     = mongoose.model 'User'
 
 OAuth2 = require('simple-oauth2')({
-  clientID: '172930e2f1537d803337',
-  clientSecret: '8323940a33c2aff4c0461eeb594854f9af9b482d',
-  site: 'https://github.com/login',
-  tokenPath: '/oauth/access_token'
+  clientID:     process.env.OAUTH_CLIENT_ID or 'a4e05cf138141b4aa798'
+  clientSecret: process.env.OAUTH_CLIENT_SECRET or '65a0be079a33212f44dfc86d54a26322e769b8d8'
+  site:         'https://github.com/login'
+  tokenPath:    '/oauth/access_token'
 })
+
+REDIRECT_URL = if 'development' is process.env.NODE_ENV
+  'http://localhost:3000/callback'
+else
+  'http://staging-manager.herokuapp.com/callback'
 
 # Authorization uri definition
 
@@ -21,7 +26,7 @@ class SMAuth
     5697447, # weining
   ]
   @authorization_uri = OAuth2.AuthCode.authorizeURL({
-    redirect_uri: 'http://localhost:3000/callback',
+    redirect_uri: REDIRECT_URL,
     scope: 'user:email',
     state: '3(#0/!~'
   })
@@ -40,7 +45,7 @@ class SMAuth
 
     OAuth2.AuthCode.getToken({
       code: code,
-      redirect_uri: 'http://localhost:3000/callback'
+      redirect_uri: REDIRECT_URL
     }, saveToken)
 
 
