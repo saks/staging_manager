@@ -1,12 +1,34 @@
 extends layout
 
 block content
-  script(type='text/x-handlebars')
-    .container
-      .pricing-tables
-        h1#detached-wide.
-          Servers list
-        {{outlet}}
+  script(type='text/x-handlebars' id='application')
+    .site-wrapper-inner
+      .cover-container
+        .masthead.clearfix
+          .inner
+            h3.masthead-brand Staging Server Manager
+            ul.nav.masthead-nav
+              if currentUser
+                li
+                  a(href=currentUser.html_url)= currentUser.email
+                li
+                  a(href='/logout') Logout
+              else
+                li
+                  a(href='/auth') Login
+
+
+        .inner.cover.
+          {{outlet}}
+
+        .mastfoot
+          .inner
+            p powered by saksmlz
+
+  script(type='text/x-handlebars', id='login')
+    h1.cover-heading Share your servers
+    p.lead
+      a.btn.btn-default.btn-lg(href='/auth') Login
 
   script(type='text/x-handlebars', id='servers')
     .row
@@ -17,9 +39,12 @@ block content
             h2
               {{server.name}}
           ul.item-list
-            li
-              strong.
-                ip: {{server.ip_address}}
+            li.
+              {{#if server.locked}}
+                locked by: {{server.locked_by_email}}
+              {{else}}
+                free to lock
+              {{/if}}
             li.
               {{#if server.locked}}
                 <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
