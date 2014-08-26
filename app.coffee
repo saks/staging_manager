@@ -14,11 +14,22 @@ servers      = require('./routes/servers')
 session      = require('express-session')
 cookieParser = require('cookie-parser')
 redis        = require('redis')
-redisClient  = redis.createClient()
 RedisStore   = require('connect-redis')(session)
-sessionStore = new RedisStore client: redisClient, host: 'localhost', port: '6379'
+url          = require 'url'
 app          = express()
 
+
+# connect to redis
+if process.env.REDISTOGO_URL
+  redisURL    = url.parse process.env.REDISTOGO_URL
+  password    = redisURL.auth.split(":")[1]
+  redisClient = redis.createClient redisURL.port, redisURL.hostname
+  redisClient.auth password
+else
+  redisClient = redis.createClient()
+
+
+sessionStore = new RedisStore client: redisClient
 
 # view engine setup
 app.set 'views', path.join(__dirname, 'app', 'views')
