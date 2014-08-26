@@ -81,7 +81,7 @@ Author: Rashid Shafique | rmughal@gmail.com
       color: #aaa;
       font-size: 14px; }
   .plan .btn {
-    padding: 10px 30px;
+  /*   padding: 10px 30px; */
     text-transform: uppercase;
     font-weight: 500; }
   .plan ul {
@@ -111,5 +111,5 @@ Author: Rashid Shafique | rmughal@gmail.com
       border-top-left-radius: 4px;
       border-top-right-radius: 4px;
       background: #171717; }
-    .plan.recommended .btn {
-      margin-bottom: 10px; }
+    /* .plan.recommended .btn { */
+    /*   margin-bottom: 10px; } */
