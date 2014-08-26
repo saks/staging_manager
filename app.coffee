@@ -1,5 +1,6 @@
 require './db'
 require './app/models/server'
+require './app/models/user'
 express      = require('express')
 logfmt       = require('logfmt')
 path         = require('path')
@@ -10,16 +11,29 @@ bodyParser   = require('body-parser')
 routes       = require('./routes/index')
 users        = require('./routes/users')
 servers      = require('./routes/servers')
+session      = require('express-session')
+cookieParser = require('cookie-parser')
+redis        = require('redis')
+redisClient  = redis.createClient()
+RedisStore   = require('connect-redis')(session)
+sessionStore = new RedisStore client: redisClient, host: 'localhost', port: '6379'
 app          = express()
+
 
 # view engine setup
 app.set 'views', path.join(__dirname, 'app', 'views')
 app.set 'view engine', 'jade'
+
 app.use favicon()
 app.use logger('dev')
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
-app.use cookieParser()
+app.use cookieParser('bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4')
+app.use session(
+  key:    'app.session'
+  secret: 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
+  store:   sessionStore
+)
 app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
