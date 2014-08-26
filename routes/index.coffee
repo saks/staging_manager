@@ -1,51 +1,41 @@
 express = require('express')
 router  = express.Router()
-url     = require 'url'
+mongoose = require 'mongoose'
+User    = mongoose.model 'User'
+SMAuth  = require './../lib/smauth'
+
 
 # GET home page.
 router.get '/', (request, response) ->
-  response.render 'index', title: 'Express'
+  session = request.session
+
+  User.current session, (err, currentUser) ->
+    response.render 'index', title: 'Express', currentUser: currentUser
 
 # GET heartbeat
 router.get '/heartbeat', (request, response) ->
   response.json 200, 'OK'
 
-OAuth2 = require('simple-oauth2')({
-  clientID: '172930e2f1537d803337',
-  clientSecret: '8323940a33c2aff4c0461eeb594854f9af9b482d',
-  site: 'https://github.com/login',
-  tokenPath: '/oauth/access_token'
-})
-
-# Authorization uri definition
-authorization_uri = OAuth2.AuthCode.authorizeURL({
-  redirect_uri: 'http://localhost:3000/callback',
-  scope: 'user:email',
-  state: '3(#0/!~'
-})
-
 # Initial page redirecting to Github
 router.get '/auth', (req, res) ->
-  res.redirect(authorization_uri)
+  session = req.session
+  if session.user_id
+    res.redirect '/'
+  else
+    res.redirect SMAuth.authorization_uri
 
 # Callback service parsing the authorization token and asking for the access token
 router.get '/callback', (req, res) ->
+  session = req.session
   code = req.query.code
 
-  saveToken = (error, result) ->
-    console.log('Access Token Error', error.message) if error
+  new SMAuth code, (error, user) ->
+    session.user_id = user.id unless error
+    res.redirect '/'
 
-    tokenObject  = OAuth2.AccessToken.create(result)
-    access_token = url.parse("http://foo/?#{tokenObject.token}", true).query.access_token
-
-    res.json token: access_token
-    # res.render 'index',
-
-  OAuth2.AuthCode.getToken({
-    code: code,
-    redirect_uri: 'http://localhost:3000/callback'
-  }, saveToken)
-
+router.get '/logout', (req, res) ->
+  delete req.session.user_id
+  res.redirect '/'
 
 
 module.exports = router
