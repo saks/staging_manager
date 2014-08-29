@@ -11,9 +11,9 @@ OAuth2 = require('simple-oauth2')({
 })
 
 REDIRECT_URL = if 'development' is process.env.NODE_ENV
-  'http://localhost:3000/callback'
+  'http://localhost:3000/auth/callback'
 else
-  'http://staging-manager.herokuapp.com/callback'
+  'http://staging-manager.herokuapp.com/auth/callback'
 
 # Authorization uri definition
 

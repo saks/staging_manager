@@ -12,10 +12,10 @@ block content
                 li
                   a(href=currentUser.html_url)= currentUser.email
                 li
-                  a(href='/logout') Logout
+                  a(href='/auth/signout') Logout
               else
                 li
-                  a(href='/auth') Login
+                  a.login-link(href='/auth/signin') Login
 
 
         .inner.cover.
@@ -28,7 +28,7 @@ block content
   script(type='text/x-handlebars', id='login')
     h1.cover-heading Share your servers
     p.lead
-      a.btn.btn-default.btn-lg(href='/auth') Login
+      a.login-link.btn.btn-default.btn-lg(href='/auth/signin') Login
 
   script(type='text/x-handlebars', id='servers')
     .row
