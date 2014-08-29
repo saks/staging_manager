@@ -12,24 +12,15 @@ router.get '/', (request, response) ->
   Server.find().sort('name').exec (err, document) ->
     response.json servers: document unless err
 
-# PUT update server model. Currently can only lock or unlock server.
+# PUT update server model. Currently can only toggle lock.
 router.put '/:id', (request, response) ->
   response.status 403 unless request.session.user_id
+  serverAttributes = request.body.server
 
-  Server.findById request.params.id, (findError, server) ->
-    if not findError
-      serverAttributes = request.body.server
-
-      server.locked         = serverAttributes.locked
-      server.locked_by_id   = serverAttributes.locked_by_id
-      server.locked_by_name = serverAttributes.locked_by_name
-
-      server.save (saveError, updatedServer, numberAffected) ->
-        response.status(406) unless 1 is numberAffected
-
-        if not saveError
-          response.json { server: updatedServer }
-        else
-          response.status(406).json error: saveError
+  Server.toggleLock request.params.id, serverAttributes, (error, server) ->
+    if error
+      response.status(406).json error: error
+    else
+      response.json { server: server }
 
 module.exports = router

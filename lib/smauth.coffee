@@ -24,6 +24,7 @@ class SMAuth
     729524,  # jess
     648293,  # matt
     5697447, # weining
+    8592060, # test account
   ]
   @authorization_uri = OAuth2.AuthCode.authorizeURL({
     redirect_uri: REDIRECT_URL,
