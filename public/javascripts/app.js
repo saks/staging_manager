@@ -53,8 +53,10 @@ App.ServersController = Ember.Controller.extend({
       server.set('locked', true);
       server.set('locked_by_id', currentUser.github_user_id);
       server.set('locked_by_name', currentUser.name || currentUser.login);
-      server.save().catch(function() {
-        alert('Cannot lock! Server was locked by ' + server.get('locked_by_name') + ' earlier!')
+      server.save().then(function(server) {
+        if (server.get('locked_by_id') != currentUser.github_user_id) {
+          alert('Cannot lock! Server was locked by ' + server.get('locked_by_name') + ' earlier!')
+        }
       })
     },
     unlock: function(server) {
