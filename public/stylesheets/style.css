@@ -1,34 +1,11 @@
-/* body { */
-/*   padding: 50px; */
-/*   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; */
-/* } */
-/*  */
-/* a { */
-/*   color: #00B7FF; */
-/* } */
-
-
-/* required by woof messages: */
-/* Put your CSS here */
-
-.woof-message {
-  cursor: pointer;
+body { padding-top: 60px; }
+#main_content { min-height: 300px; }
+#login_link {
+  color: #2A9FD6;
 }
-
-.woof-message:hover button.close {
-  color: #000;
-  opacity: .5;
+#login_screen {
+  color: #fff;
 }
-
-div.x-woof-message-container.pre-insert, div.x-woof-message-container.destroyed {
-/*   -webkit-transform: scaleY(0); */
-  opacity: 0;
-  height: 0;
-}
-
-div.x-woof-message-container {
-/*   -webkit-transform: scaleY(1);
-  -webkit-transform-origin: top;
-   */
-  -webkit-transition: all 0.25s ease;
+#messages {
+  height: 70px;
 }
