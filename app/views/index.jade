@@ -1,6 +1,18 @@
 extends layout
 
 block content
+
+  script(type="text/x-handlebars" id="components/x-woof").
+    {{#each messages}}
+      {{x-woof-message message=this}}
+    {{/each}}
+
+  script(type="text/x-handlebars" id="components/x-woof-message").
+    <div {{bind-attr class=":woof-message :alert :alert-dismissable message.typeClass"}}>
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{message.message}}
+    </div>
+
   script(type='text/x-handlebars' id='application')
     .site-wrapper-inner
       .cover-container
@@ -18,37 +30,40 @@ block content
                   a.login-link(href='/auth/signin') Login
 
 
-        .inner.cover.
-          {{outlet}}
+        .inner.cover
+          {{x-woof}}
+
+          .row
+            {{outlet}}
 
         .mastfoot
           .inner
             p powered by saksmlz
 
   script(type='text/x-handlebars', id='login')
-    h1.cover-heading Share your servers
-    p.lead
-      a.login-link.btn.btn-default.btn-lg(href='/auth/signin') Login
+    .col-sm-12.col-md-12
+      h1.cover-heading Share your servers
+      p.lead
+        a.login-link.btn.btn-default.btn-lg(href='/auth/signin') Login
 
   script(type='text/x-handlebars', id='servers')
-    .row
-      {{#each server in model}}
-      .col-sm-4.col-md-4
-        .plan
-          .head
-            h2
-              {{server.name}}
-          ul.item-list
-            li.
-              {{#if server.locked}}
-                locked by: {{server.locked_by_name}}
-              {{else}}
-                free to lock
-              {{/if}}
-            li.
-              {{#if server.locked}}
-                <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
-              {{else}}
-                <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
-              {{/if}}
-      {{/each}}
+    {{#each server in model}}
+    .col-sm-4.col-md-4
+      .plan
+        .head
+          h2
+            {{server.name}}
+        ul.item-list
+          li.
+            {{#if server.locked}}
+              locked by: {{server.locked_by_name}}
+            {{else}}
+              free to lock
+            {{/if}}
+          li.
+            {{#if server.locked}}
+              <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
+            {{else}}
+              <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
+            {{/if}}
+    {{/each}}

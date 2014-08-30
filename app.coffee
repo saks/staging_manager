@@ -12,6 +12,7 @@ routes       = require('./routes/index')
 users        = require('./routes/users')
 servers      = require('./routes/servers')
 authRoutes   = require('./routes/auth')
+apiRoutes    = require('./routes/api')
 session      = require('express-session')
 cookieParser = require('cookie-parser')
 redis        = require('redis')
@@ -50,6 +51,7 @@ app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
 app.use '/auth',    authRoutes
+app.use '/api',     apiRoutes
 app.use '/users',   users
 app.use '/servers', servers
 
