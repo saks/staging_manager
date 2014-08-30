@@ -9,7 +9,10 @@ Ember.Application.initializer({
 
 Ember.Woof = Ember.ArrayProxy.extend({
   content: Ember.A(),
-  timeout: 3000,
+  timeout: 5000,
+  currentMessage: function() {
+    return this.get('firstObject')
+  },
   pushObject: function(object) {
     this.clear();
     object.typeClass = 'alert-' + object.type;
@@ -36,6 +39,13 @@ Ember.Woof = Ember.ArrayProxy.extend({
   success: function(message) {
     this.pushObject({
       type: 'success',
+      message: message
+    });
+  },
+  permanent: function(message) {
+    this.pushObject({
+      type: 'danger',
+      permanent: true,
       message: message
     });
   }
@@ -78,17 +88,18 @@ App.XWoofMessageComponent = Ember.Component.extend({
       self.set('insertState', 'inserted');
     }, 250);
 
-    if (self.woof.timeout) {
+    if (self.woof.timeout && !self.woof.currentMessage().permanent) {
       Ember.run.later(function() {
         if (self._state === 'destroying') return;
-        self.set('insertState', 'destroyed');
+        self.woof.clear()
       }, self.woof.timeout);
     }
   },
 
   click: function() {
-    var self = this;
-    self.set('insertState', 'destroyed');
+    if (!this.woof.currentMessage().permanent) {
+      this.woof.clear()
+    }
   }
 });
 // end of woof
@@ -102,7 +113,7 @@ if ($currentUserField.length > 0) {
 
 
 App.ApplicationView = Ember.View.extend({
-  classNames: ['site-wrapper'],
+  classNames: [],
 });
 
 App.Router.map(function() {
@@ -144,7 +155,9 @@ App.ServersController = Ember.Controller.extend({
         if (server.get('locked_by_id') == currentUser.github_user_id) {
           woof.success('Server ' + server.get('name') + ' was successfully locked.');
         } else {
-          woof.danger('Cannot lock ' + server.get('name') + '! Server was locked by ' + server.get('locked_by_name') + ' earlier!');
+          woof.permanent('Cannot lock <strong>' + server.get('name') +
+              '</strong>! Server was locked by <strong>' + server.get('locked_by_name') +
+              '</strong> earlier!');
         }
       })
     },

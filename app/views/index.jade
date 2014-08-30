@@ -10,60 +10,75 @@ block content
   script(type="text/x-handlebars" id="components/x-woof-message").
     <div {{bind-attr class=":woof-message :alert :alert-dismissable message.typeClass"}}>
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {{message.message}}
+      {{{message.message}}}
     </div>
 
   script(type='text/x-handlebars' id='application')
-    .site-wrapper-inner
-      .cover-container
-        .masthead.clearfix
-          .inner
-            h3.masthead-brand Staging Server Manager
-            ul.nav.masthead-nav
-              if currentUser
-                li
-                  a(href=currentUser.html_url)= currentUser.email
-                li
-                  a(href='/auth/signout') Logout
-              else
-                li
-                  a.login-link(href='/auth/signin') Login
+    .navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target=".navbar-collapse")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="#") Staging Manager
+
+        .navbar-collapse.collapse
+          ul.nav.navbar-nav.pull-right
+            if currentUser
+              li
+                a(href=currentUser.html_url)= currentUser.email
+              li
+                a(href='/auth/signout') Logout
+            else
+              li
+                a.login-link(href='/auth/signin') Login
+
+    .container#main_content
+      #messages
+        {{x-woof}}
+
+      {{outlet}}
 
 
-        .inner.cover
-          {{x-woof}}
-
-          .row
-            {{outlet}}
-
-        .mastfoot
-          .inner
-            p powered by saksmlz
+    #footerwrap
+      footer.clearfix
+      .container
+        .row
+          .col-sm-12.col-lg-12
+            p.
+              Blocks Dashboard Theme - Crafted With Love - Copyright 2013
 
   script(type='text/x-handlebars', id='login')
-    .col-sm-12.col-md-12
-      h1.cover-heading Share your servers
-      p.lead
-        a.login-link.btn.btn-default.btn-lg(href='/auth/signin') Login
+    #login_screen
+      h1.cover-heading.text-center
+        = 'Please '
+        a#login_link(href='/auth/signin') let us know
+        = ' who you are.'
 
   script(type='text/x-handlebars', id='servers')
-    {{#each server in model}}
-    .col-sm-4.col-md-4
-      .plan
-        .head
-          h2
+    .row
+      {{#each server in model}}
+      .col-sm-3.col-lg-3
+        .dash-unit
+          dtitle.
             {{server.name}}
-        ul.item-list
-          li.
-            {{#if server.locked}}
-              locked by: {{server.locked_by_name}}
-            {{else}}
-              free to lock
-            {{/if}}
-          li.
-            {{#if server.locked}}
-              <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
-            {{else}}
-              <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
-            {{/if}}
-    {{/each}}
+          hr
+          .cont
+            p deployed at: 12 Aprl 2014
+            p branch: master
+            p deployed by: saksmlz
+            p.
+              {{#if server.locked}}
+                locked by: {{server.locked_by_name}}
+              {{else}}
+                free to lock
+              {{/if}}
+            p.
+              {{#if server.locked}}
+                <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
+              {{else}}
+                <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
+              {{/if}}
+      {{/each}}
