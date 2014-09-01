@@ -5,8 +5,9 @@ ServerSchema = new Schema
   name:           String
   ip_address:     String
   locked:         Boolean
-  locked_by_id:   Number
+  locked_by_id:   Schema.Types.ObjectId
   locked_by_name: String
+  locked_at:      Date
 
 
 ServerSchema.options.toJSON = {
@@ -17,13 +18,14 @@ ServerSchema.options.toJSON = {
     ret
 }
 
-ServerSchema.statics.toggleLock = (id, serverAttributes, callback) ->
-  @findById id, (findError, server) ->
+# options: { id: <server model id>, locked: <boolean>, user: <current user> }
+ServerSchema.statics.toggleLock = (options, callback) ->
+  @findById options.id, (findError, server) ->
     if findError
       callback findError, server
       return
 
-    server.locked = serverAttributes.locked
+    server.locked = options.locked
 
     server.save (saveError, updatedServer, numberAffected) ->
       wasUpdated = 1 is numberAffected
@@ -32,8 +34,12 @@ ServerSchema.statics.toggleLock = (id, serverAttributes, callback) ->
         callback saveError, updatedServer
         return
 
-      server.locked_by_id   = serverAttributes.locked_by_id
-      server.locked_by_name = serverAttributes.locked_by_name
+      if server.locked
+        server.locked_by_id   = options.user.id
+        server.locked_by_name = options.user.verboseName()
+        server.locked_at      = new Date()
+      else
+        server.locked_by_id = server.locked_by_name = server.locked_at = undefined
 
       server.save (saveError, updatedServer, numberAffected) ->
         callback saveError, updatedServer

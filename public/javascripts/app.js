@@ -63,6 +63,9 @@ Ember.Application.initializer({
 
 // --- end of woof messages ---
 
+Ember.Handlebars.registerBoundHelper('formatDate', function(date) {
+  return moment(date).format('lll')
+});
 
 
 var App = Ember.Application.create();
@@ -138,8 +141,9 @@ App.Server = DS.Model.extend({
   name      : DS.attr('string'),
   ip_address: DS.attr('string'),
   locked    : DS.attr('boolean'),
-  locked_by_id : DS.attr('number'),
+  locked_by_id : DS.attr('string'),
   locked_by_name : DS.attr('string'),
+  locked_at : DS.attr('date'),
 });
 
 App.ServersController = Ember.Controller.extend({
@@ -149,10 +153,9 @@ App.ServersController = Ember.Controller.extend({
       currentUser = App.currentUser;
 
       server.set('locked', true);
-      server.set('locked_by_id', currentUser.github_user_id);
-      server.set('locked_by_name', currentUser.name || currentUser.login);
+
       server.save().then(function(server) {
-        if (server.get('locked_by_id') == currentUser.github_user_id) {
+        if (server.get('locked_by_id') == currentUser.id) {
           woof.success('Server ' + server.get('name') + ' was successfully locked.');
         } else {
           woof.permanent('Cannot lock <strong>' + server.get('name') +
