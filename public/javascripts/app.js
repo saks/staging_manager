@@ -67,6 +67,13 @@ Ember.Handlebars.registerBoundHelper('formatDate', function(date) {
   return moment(date).format('lll')
 });
 
+Ember.Handlebars.registerBoundHelper('linkToServer', function(server) {
+  var string = '<a href="https://' + server.get('host') + '" target="_blank">' +
+    server.get('name') + '</a>';
+
+  return new Handlebars.SafeString(string)
+});
+
 
 var App = Ember.Application.create();
 
@@ -141,9 +148,15 @@ App.Server = DS.Model.extend({
   name      : DS.attr('string'),
   ip_address: DS.attr('string'),
   locked    : DS.attr('boolean'),
-  locked_by_id : DS.attr('string'),
-  locked_by_name : DS.attr('string'),
   locked_at : DS.attr('date'),
+  host      : DS.attr('string'),
+  branch    : DS.attr('string'),
+  locked_by_id   : DS.attr('string'),
+  locked_by_name : DS.attr('string'),
+
+  branchName: function() {
+    return this.get('branch') || 'n/a'
+  }.property('branch')
 });
 
 App.ServersController = Ember.Controller.extend({

@@ -3,6 +3,7 @@ Schema   = mongoose.Schema
 
 ServerSchema = new Schema
   name:           String
+  host:           String
   ip_address:     String
   locked:         Boolean
   locked_by_id:   Schema.Types.ObjectId
