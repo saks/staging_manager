@@ -52,7 +52,6 @@ app.use express.static(path.join(__dirname, 'public'))
 app.use '/',        routes
 app.use '/auth',    authRoutes
 app.use '/api',     apiRoutes
-app.use '/users',   users
 app.use '/servers', servers
 
 #/ catch 404 and forward to error handler
