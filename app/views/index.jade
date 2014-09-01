@@ -72,6 +72,9 @@ block content
             p.
               {{#if server.locked}}
                 locked by: {{server.locked_by_name}}
+                <br/>
+                <br/>
+                at: {{formatDate server.locked_at}}
               {{else}}
                 free to lock
               {{/if}}

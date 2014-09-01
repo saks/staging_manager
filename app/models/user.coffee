@@ -42,6 +42,9 @@ UserSchema.options.toJSON = {
     ret
 }
 
+UserSchema.methods.verboseName = ->
+  @name || @email || @login
+
 UserSchema.statics.current = (session, callback) ->
   if session.user_id
     @findById session.user_id, callback
