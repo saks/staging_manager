@@ -37,6 +37,7 @@ sessionStore = new RedisStore client: redisClient
 app.set 'views', path.join(__dirname, 'app', 'views')
 app.set 'view engine', 'jade'
 
+app.use require('connect-assets')()
 app.use favicon()
 app.use logger('dev')
 app.use bodyParser.json()
