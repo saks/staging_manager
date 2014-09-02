@@ -68,8 +68,8 @@ Ember.Handlebars.registerBoundHelper('formatDate', function(date) {
 });
 
 Ember.Handlebars.registerBoundHelper('linkToServer', function(server) {
-  var string = '<a href="https://' + server.get('host') + '" target="_blank">' +
-    server.get('name') + '</a>';
+  var string = '<a href="https://' + server.get('host') + '" class="open-site" target="_blank">' +
+    server.get('name') + '<span class="glyphicon glyphicon-new-window"></span>' + '</a>';
 
   return new Handlebars.SafeString(string)
 });
@@ -163,12 +163,10 @@ App.ServersController = Ember.Controller.extend({
   actions: {
     lock: function(server) {
       woof = this.woof
-      currentUser = App.currentUser;
-
       server.set('locked', true);
 
       server.save().then(function(server) {
-        if (server.get('locked_by_id') == currentUser.id) {
+        if (server.get('locked_by_id') == App.currentUser.id) {
           woof.success('Server ' + server.get('name') + ' was successfully locked.');
         } else {
           woof.permanent('Cannot lock <strong>' + server.get('name') +
@@ -180,12 +178,16 @@ App.ServersController = Ember.Controller.extend({
     unlock: function(server) {
       woof = this.woof
 
-      server.set('locked', false);
-      server.set('locked_by_id', null);
-      server.set('locked_by_name', null);
-      server.save().then(function(server) {
-        woof.success('Server ' + server.get('name') + ' was successfully unlocked.')
-      })
+      confirmationText = 'Are you sure you want to unlock server that was locked by ' +
+        server.get('locked_by_name') + ' ?'
+      lockedByThisUser = server.get('locked_by_id') === App.currentUser.id
+
+      if ((!lockedByThisUser && confirm(confirmationText)) || lockedByThisUser) {
+        server.set('locked', false);
+        server.save().then(function(server) {
+          woof.success('Server ' + server.get('name') + ' was successfully unlocked.')
+        })
+      }
     },
   }
 })

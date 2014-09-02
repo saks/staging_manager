@@ -28,7 +28,9 @@ block content
           ul.nav.navbar-nav.pull-right
             if currentUser
               li
-                a(href=currentUser.html_url)= currentUser.email
+                a(href=currentUser.html_url)
+                  img.avatar.img-circle(src=currentUser.avatar_url)
+                  = currentUser.verboseName()
               li
                 a(href='/auth/signout') Logout
             else
@@ -69,19 +71,17 @@ block content
             p deployed at: 12 Aprl 2014
             p branch: {{server.branchName}}
             p deployed by: saksmlz
-            p.
-              {{#if server.locked}}
-                locked by: {{server.locked_by_name}}
-                <br/>
-                <br/>
-                at: {{formatDate server.locked_at}}
-              {{else}}
-                free to lock
-              {{/if}}
-            p.
-              {{#if server.locked}}
-                <button class='btn btn-default btn-danger' {{action 'unlock' server}}>unlock</button>
-              {{else}}
-                <button class='btn btn-default btn-success' {{action 'lock' server}}>lock</button>
-              {{/if}}
+            {{#if server.locked}}
+            p locked by: {{server.locked_by_name}}
+            p at: {{formatDate server.locked_at}}
+            {{else}}
+            p free to lock
+            p &nbsp;
+            {{/if}}
+          .footer.
+            {{#if server.locked}}
+              <button class='btn btn-default btn-lg btn-danger' {{action 'unlock' server}}>unlock</button>
+            {{else}}
+              <button class='btn btn-default btn-lg btn-success' {{action 'lock' server}}>lock</button>
+            {{/if}}
       {{/each}}
