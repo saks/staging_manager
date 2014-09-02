@@ -1,15 +1,17 @@
 express = require 'express'
 router  = express.Router()
 SMAuth  = require './../lib/smauth'
+mongoose = require 'mongoose'
+User     = mongoose.model 'User'
 
 
 # Initial page redirecting to Github
 router.get '/signin', (req, res) ->
-  session = req.session
-  if session.user_id
-    res.redirect '/'
-  else
-    res.redirect SMAuth.authorization_uri
+  User.current req.session, (error, currentUser) ->
+    if error or not currentUser
+      res.redirect SMAuth.authorization_uri
+    else
+      res.redirect '/'
 
 router.get '/signout', (req, res) ->
   delete req.session.user_id
