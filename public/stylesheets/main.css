@@ -7,7 +7,7 @@
  * Please, feel free to contact me if you have any questions regarding this theme.
  *
  *
- * Copyright 2013 
+ * Copyright 2013
  * Created by: Carlos Alvarez
  * URL: http://Alvarez.is
  * Designed and built based on Twitter Bootstrap.
@@ -15,18 +15,24 @@
 
 /* COLOR REFERENCE
 - #1f1f1f (Background Color)
-- #3d3d3d (Dash-unit and half-unit Section) 
-- #262626 (Footer) 
-- #fa1d2d (Red - Used in selectors, parragraphs, bars and other) 
-- #b2c831 (Green - Used in titles, badges, bars and other) 
+- #3d3d3d (Dash-unit and half-unit Section)
+- #262626 (Footer)
+- #fa1d2d (Red - Used in selectors, parragraphs, bars and other)
+- #2A9FD6 (Green - Used in titles, badges, bars and other)
 - #bdbdbd & #fff (Font colors)
 */
 
 
-/**********BASE CONFIGURATIONS**********/   
+/**********BASE CONFIGURATIONS**********/
 body {
 	background:#1f1f1f;
     font-family: 'Open Sans', sans-serif;
+}
+
+.avatar {
+  height: 30px;
+  width: 30px;
+  margin-right: 1em;
 }
 
 h1 {
@@ -43,25 +49,25 @@ h2{
 
 h3 {
 	font-size:46px;
-	color:#b2c831
+	color:#2A9FD6
 }
 
 h5 {
-	color:#b2c831;
+	color:#2A9FD6;
 	margin-left:5px;
 }
 
 /***********BLOCKS & WRAPS***********/
 
 /*--- Dash Unit / Used in Dashboard page ---*/
-.dash-unit {		
+.dash-unit {
 	margin-bottom: 30px;
 	padding-bottom:10px;
 	border: 1px solid #383737;
 	background-image:url('../img/sep-half.png');
 	background-color: #3d3d3d;
 	color:white;
-	height:290px;
+	height:320px;
 }
 
 .dash-unit:hover {
@@ -78,9 +84,9 @@ h5 {
 	color:#ffffff;
 	margin:8px;
 	padding:0px;
-	height:inherit	
+	height:inherit
 	}
-	
+
 .dash-unit hr {
   	border: 0;
   	border-top: 1px solid #151515;
@@ -120,7 +126,7 @@ h5 {
 	font-size: 15px;
 	line-height: 2px;
 	letter-spacing: 0px;
-	color: #b2c831;
+	color: #2A9FD6;
 	padding-top:10px;
 	padding-left:5px;
 	margin-top:2px;
@@ -156,8 +162,8 @@ h5 {
 }
 
 
-/**********Half-Unit / Used in index.html**********/   
-.half-unit {		
+/**********Half-Unit / Used in index.html**********/
+.half-unit {
 	margin-bottom: 30px;
 	padding-bottom: 4px;
 	border: 1px solid #383737;
@@ -181,9 +187,9 @@ h5 {
 	color:#ffffff;
 	margin:8px;
 	padding:0px;
-	height:inherit	
+	height:inherit
 	}
-	
+
 .half-unit hr {
   	border: 0;
   	border-top: 1px solid #151515;
@@ -223,14 +229,19 @@ h5 {
 	vertical-align:middle;
 }
 
-/**********Styling Elements**********/   
+/**********Styling Elements**********/
 .cont {
 	text-align:center;
 	margin-top:30px;
 }
 
+.footer button {
+  width: 100%;
+  border-radius: 0;
+}
+
 .cont ok {
-	color:#b2c831;
+	color:#2A9FD6;
 }
 
 .cont bad {
@@ -247,7 +258,7 @@ h5 {
 .cont2 bold{
 	font-size:10px;
 	font-weight:bold;
-	color:#b2c831
+	color:#2A9FD6
 }
 
 .text p {
@@ -272,8 +283,8 @@ h5 {
      -moz-box-shadow: 0px;
           box-shadow: 0px;
     background: none;
-    text-align: center;      
-	
+    text-align: center;
+
 }
 
 .modal-header {
@@ -286,7 +297,7 @@ h5 {
 input[type=submit] {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 15px;
-	background: #b2c831;
+	background: #2A9FD6;
 	color: #fff;
 	border: none;
 	padding: 8px 28px 10px 26px;
@@ -312,7 +323,7 @@ textarea {
 	line-height: 18px;
 	padding: 18px;
 	width: 100%;
-	text-indent: 0;	
+	text-indent: 0;
 }
 .textarea-container { margin: 0 18px; }
 .textarea-container textarea { margin-left: -18px; }
@@ -320,7 +331,7 @@ textarea {
 
 
 .progress-bar {
-	background-color: #b2c831;
+	background-color: #2A9FD6;
 }
 
 
@@ -332,7 +343,7 @@ textarea {
 .info-user {
 	text-align:center;
 	font-size: 24px;
-	color: #b2c831;
+	color: #2A9FD6;
 	}
 
 .fs1 {
@@ -353,14 +364,14 @@ textarea {
 	vertical-align: text-bottom
 }
 
-/**********Clock Configuration**********/   
+/**********Clock Configuration**********/
 
 digiclock {
 	font-size: 30px;
 	color: #fff;
 	text-align: center;
 	line-height: 60px;
-	margin-left: auto	
+	margin-left: auto
 }
 
 .clockcenter {
@@ -368,7 +379,7 @@ digiclock {
 }
 
 
-/**********Mail Style Configuration**********/   
+/**********Mail Style Configuration**********/
 
 .framemail {
     cursor: default;
@@ -427,7 +438,7 @@ digiclock {
     background-color: #ddd;
 }
 .framemail .window .mail li .unread {
-    background: #b2c831;
+    background: #2A9FD6;
 }
 .framemail .window .mail li img {
     background: #819da2;
@@ -451,9 +462,9 @@ digiclock {
 }
 .framemail .window .mail li .message {
     color: #999;
-    overflow: hidden;  
+    overflow: hidden;
     text-overflow: ellipsis;
-    top: 21px;  
+    top: 21px;
     white-space: nowrap;
 }
 .framemail .window .mail li .message strong {
@@ -512,7 +523,7 @@ digiclock {
   position: relative;
   height: 130px;
   color: #fff;
-  background-image: linear-gradient(color-stops(#b2c831, #b2c831 50%, #b2c831 50%));
+  background-image: linear-gradient(color-stops(#2A9FD6, #2A9FD6 50%, #2A9FD6 50%));
   margin-bottom:20px;
 }
 .section-graph .graph-info {
@@ -577,7 +588,7 @@ digiclock {
   background-color: #fa1d2d;
 }
 .info-aapl li span.green {
-  background-color: #b2c831;
+  background-color: #2A9FD6;
 }
 
 /**********TWITTER WIDGET **********/
@@ -615,7 +626,7 @@ ul#jstwitter li a{
   *margin-left: .3em;
     font-size: 14px;
     line-height: 20px;
-    color: #b2c831;
+    color: #2A9FD6;
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
@@ -699,12 +710,12 @@ ul#jstwitter li a{
   left: 2px;
   width: 58px;
   height: 22px;
-  background: #b2c831;
+  background: #2A9FD6;
   border-radius: 3px;
-  background-image: -webkit-linear-gradient(top, #b6c753, #b2c831);
-  background-image: -moz-linear-gradient(top, #b6c753, #b2c831);
-  background-image: -o-linear-gradient(top, #b6c753, #b2c831);
-  background-image: linear-gradient(to bottom, #b6c753, #b2c831);
+  background-image: -webkit-linear-gradient(top, #b6c753, #2A9FD6);
+  background-image: -moz-linear-gradient(top, #b6c753, #2A9FD6);
+  background-image: -o-linear-gradient(top, #b6c753, #2A9FD6);
+  background-image: linear-gradient(to bottom, #b6c753, #2A9FD6);
   -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-transition: left 0.15s ease-out;
@@ -728,14 +739,14 @@ ul#jstwitter li a{
 }
 
 
-/**********Gauge Chart**********/   
+/**********Gauge Chart**********/
 #canvas {
 	display: block;
 	width: 150px;
 	margin: 30px auto;
 }
 
-/**********Accordion Styling**********/   
+/**********Accordion Styling**********/
 
 .accordion-group {
 	border: 1px solid #222;
@@ -754,20 +765,23 @@ ul#jstwitter li a{
 	background-image: linear-gradient(to bottom, #707070, #707070);*
 }
 
-/**********Link Styling**********/   
+/**********Link Styling**********/
 a {
-  color: #b2c831;
+  color: #2A9FD6;
   text-decoration: none;
 }
 
 a:hover {
-  color: #dff948;
+  color: #A6D6FF;
   text-decoration: none;
 }
 
+a.open-site .glyphicon {
+  margin-left: 1em;
+}
 
 
-/**********FooterWrap Section**********/   
+/**********FooterWrap Section**********/
 #footerwrap {
     width: 100%;
     background:#262626;
@@ -784,7 +798,7 @@ a:hover {
 #footerwrap p {
 	color:white;
 	font-size:12px;
-} 
+}
 
 
 /***********FULLCALENDAR STYLE***********/
@@ -798,28 +812,28 @@ a:hover {
 	          border-radius: 4px;
 	text-align: left;
 	}
-	
+
 #external-events h4 {
 	font-size: 16px;
 	margin-top: 0;
 	padding-top: 1em;
 	}
-	
+
 .external-event { /* try to mimick the look of a real event */
 	margin: 10px 0;
 	padding: 2px 4px;
-	background: #b2c831;
+	background: #2A9FD6;
 	color: #fff;
 	font-size: .85em;
 	cursor: pointer;
 	}
-	
+
 #external-events p {
 	margin: 1.5em 0;
 	font-size: 11px;
-	color: #b2c831;
+	color: #2A9FD6;
 	}
-	
+
 #external-events p input {
 	margin: 0;
 	vertical-align: middle;
@@ -830,7 +844,7 @@ a:hover {
 	}
 
 
-/**********Media Styles**********/   
+/**********Media Styles**********/
 
 @media (max-width: 360px){
 /*Calendar Adsjustments*/
