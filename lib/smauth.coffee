@@ -32,6 +32,7 @@ class SMAuth
     state: '3(#0/!~'
   })
 
+  # TODO: handle errors better
   constructor: (code, resultCallback) ->
     authObject = this
 
