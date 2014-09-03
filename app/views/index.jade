@@ -1,6 +1,11 @@
 extends layout
 
 block content
+  script(type="text/x-handlebars" id="loading")
+    .row
+      .col-sm-12.col-lg-12.text-center.loading Loagin...
+        br
+        img(src='/images/ajax-loader.gif')
 
   script(type="text/x-handlebars" id="components/x-woof").
     {{#each messages}}
@@ -42,6 +47,7 @@ block content
         {{x-woof}}
 
       {{outlet}}
+      {{outlet "loading"}}
 
 
     #footerwrap
