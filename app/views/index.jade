@@ -67,27 +67,33 @@ block content
 
   script(type='text/x-handlebars', id='servers')
     .row
-      {{#each server in model}}
-      .col-sm-3.col-lg-3
-        .dash-unit
-          dtitle.
-            {{linkToServer server}}
-          hr
-          .cont
-            p deployed at: 12 Aprl 2014
-            p branch: {{server.branchName}}
-            p deployed by: saksmlz
-            {{#if server.locked}}
-            p locked by: {{server.locked_by_name}}
-            p at: {{formatDate server.locked_at}}
+      {{#each}}
+      .col-sm-3.col-lg-3.
+        <div class="dash-unit" {{bind-attr class="isLoading:loading:"}}>
+          <dtitle>{{linkToServer this}}</dtitle>
+          <hr/>
+          <div class="cont">
+            <p>deployed at: 12 Aprl 2014</p>
+            <p>branch: {{branchName}}</p>
+            <p>deployed by: saksmlz</p>
+            {{#if locked}}
+              <p>locked by: {{locked_by_name}}</p>
+              <p>at: {{formatDate locked_at}}</p>
             {{else}}
-            p free to lock
-            p &nbsp;
+            <p>free to lock</p>
+            <p>&nbsp;</p>
             {{/if}}
-          .footer.
-            {{#if server.locked}}
-              <button class='btn btn-default btn-lg btn-danger' {{action 'unlock' server}}>unlock</button>
+          </div>
+          <div class="footer">
+            {{#if isLoading}}
+              <button class='btn btn-default btn-lg' disabled='true'>wait...</button>
             {{else}}
-              <button class='btn btn-default btn-lg btn-success' {{action 'lock' server}}>lock</button>
+              {{#if locked}}
+                <button class='btn btn-default btn-lg btn-danger' {{action 'unlock' this}}>unlock</button>
+              {{else}}
+                <button class='btn btn-default btn-lg btn-success' {{action 'lock' this}}>lock</button>
+              {{/if}}
             {{/if}}
+          </div>
+        </div>
       {{/each}}

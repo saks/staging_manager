@@ -67,12 +67,17 @@ App.ServersRoute = Ember.Route.extend(
 
 
 ## Controllers:
-App.ServersController = Ember.Controller.extend(
+App.ServerController = Ember.ObjectController.extend(
+  isLoading: false
   actions:
     lock: (server) ->
-      woof = @woof
+      woof       = @woof
+      controller = @
+      @set 'isLoading', true
+
       server.set 'locked', true
       server.save().then (server) ->
+        controller.set 'isLoading', false
         if server.get('locked_by_id') is App.currentUser.id
           woof.success "Server #{server.get 'name'} was successfully locked."
         else
@@ -80,12 +85,18 @@ App.ServersController = Ember.Controller.extend(
             "Server was locked by <strong>#{server.get 'locked_by_name'}</strong> earlier!"
 
     unlock: (server) ->
-      woof = @woof
+      woof       = @woof
+      controller = @
       confirmationText = "Are you sure you want to unlock server that was locked by #{server.get 'locked_by_name'} ?"
       lockedByThisUser = server.get('locked_by_id') is App.currentUser.id
 
       if (not lockedByThisUser and confirm(confirmationText)) or lockedByThisUser
+        @set 'isLoading', true
         server.set 'locked', false
         server.save().then (server) ->
+          controller.set 'isLoading', false
           woof.success "Server #{server.get 'name'} was successfully unlocked."
+)
+App.ServersController = Ember.ArrayController.extend(
+  itemController: 'server'
 )

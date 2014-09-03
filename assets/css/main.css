@@ -68,10 +68,16 @@ h5 {
 	margin-bottom: 30px;
 	padding-bottom:10px;
 	border: 1px solid #383737;
-	background-image:url('../img/sep-half.png');
 	background-color: #3d3d3d;
 	color:white;
 	height:320px;
+}
+
+.dash-unit.loading, .dash-unit.loading:hover {
+  background-image: url("/images/ajax-loader.gif");
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 .dash-unit:hover {
