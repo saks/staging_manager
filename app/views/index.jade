@@ -3,7 +3,7 @@ extends layout
 block content
   script(type='text/x-handlebars' id='loading')
     .row
-      .col-sm-12.col-lg-12.text-center.loading Loagin...
+      .col-sm-12.col-lg-12.text-center.loading Loading...
         br
         img(src='/images/ajax-loader.gif')
 
@@ -73,8 +73,9 @@ block content
           <dtitle>{{linkToServer this}}</dtitle>
           <hr/>
           <div class='cont'>
+            <p>deployed at: {{deployedAt}}</p>
             <p>branch: {{branchName}}</p>
-            <p>deployed by: saksmlz</p>
+            <p>deployed by: {{deployedBy}}</p>
             {{#if locked}}
               <p>locked by: {{locked_by_name}}</p>
               <p>at: {{formatDate locked_at}}</p>

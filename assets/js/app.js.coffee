@@ -9,11 +9,12 @@ App.Server = DS.Model.extend
   locked:         attr('boolean')
   locked_at:      attr('date')
   host:           attr('string')
-  branch:         attr('string')
   locked_by_id:   attr('string')
   locked_by_name: attr('string')
-
-  branchName: (-> @get('branch') or 'n/a').property('branch')
+  branch:         attr('string')
+  deployed_at:    attr('date')
+  deployed_by_id: attr('string')
+  deployed_by_name: attr('string')
 
 
 # woof again:
@@ -69,6 +70,17 @@ App.ServersRoute = Ember.Route.extend(
 ## Controllers:
 App.ServerController = Ember.ObjectController.extend(
   isLoading: false
+  branchName: (->
+    @get('branch') or 'n/a'
+  ).property 'branch'
+  deployedAt: (->
+    @get('deployed_at') or 'n/a'
+  ).property 'deployed_at'
+  deployedBy: (->
+    @get('deployed_by_name') or 'n/a'
+  ).property 'deployed_by_name'
+
+
   actions:
     lock: (server) ->
       woof       = @woof
