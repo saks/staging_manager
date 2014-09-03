@@ -23,6 +23,11 @@ router.get '/', (request, response) ->
   Server.find().sort('name').exec (err, document) ->
     response.json servers: document unless err
 
+# GET server by id
+router.get '/:id', (request, response) ->
+  Server.findById request.params.id, (findError, server) ->
+    response.json server: server unless findError
+
 # PUT update server model. Currently can only toggle lock.
 router.put '/:id', (request, response) ->
   options =

@@ -112,11 +112,19 @@ App.ServerController = Ember.ObjectController.extend(
       woof       = @woof
       controller = @
 
+      wasLockedBy = server.get 'locked_by_id'
       @set 'isLoading', true
-      server.set 'locked', false
-      server.save().then (server) ->
-        controller.set 'isLoading', false
-        woof.success "Server #{server.get 'name'} was successfully unlocked."
+      server.reload().then (server) ->
+        # if somebody updated server before
+        if server.get('locked_by_id') isnt wasLockedBy
+          woof.warning 'Somebody changes server settigns before you.'
+          controller.set 'isLoading', false
+          return
+
+        server.set 'locked', false
+        server.save().then (server) ->
+          controller.set 'isLoading', false
+          woof.success "Server #{server.get 'name'} was successfully unlocked."
 )
 App.ServersController = Ember.ArrayController.extend(
   itemController: 'server'
