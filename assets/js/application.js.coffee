@@ -4,4 +4,7 @@
 #= require moment.js
 #= require ember-1.7.0.js
 #= require ember-data.min.js
+#
+#= require components/woof.js
+#= require helpers.js
 #= require app.js
