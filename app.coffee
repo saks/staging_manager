@@ -38,6 +38,7 @@ sessionStore = new RedisStore client: redisClient
 app.set 'views', path.join(__dirname, 'app', 'views')
 app.set 'view engine', 'jade'
 
+app.use compression threshold: false
 app.use require('connect-assets')()
 app.use favicon()
 app.use logger('dev')
@@ -49,7 +50,6 @@ app.use session(
   secret: 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
   store:   sessionStore
 )
-app.use compression()
 app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
