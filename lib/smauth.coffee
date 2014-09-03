@@ -39,6 +39,10 @@ class SMAuth
     saveToken = (error, result) ->
       console.log('Access Token Error', error.message) if error
 
+      if (tokenResponse = url.parse('http://foo/?' + result, true).query).error
+        console.log 'Error!', tokenResponse
+        return resultCallback tokenResponse.error
+
       tokenObject  = OAuth2.AccessToken.create(result)
       access_token = url.parse("http://foo/?#{tokenObject.token}", true).query.access_token
 
