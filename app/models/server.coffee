@@ -9,6 +9,10 @@ ServerSchema = new Schema
   locked_by_id:   Schema.Types.ObjectId
   locked_by_name: String
   locked_at:      Date
+  branch:         String
+  deployed_at:    Date
+  deployed_by_id: Schema.Types.ObjectId
+  deployed_by_name: String
 
 
 ServerSchema.options.toJSON = {
