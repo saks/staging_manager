@@ -14,6 +14,7 @@ servers      = require('./routes/servers')
 authRoutes   = require('./routes/auth')
 apiRoutes    = require('./routes/api')
 session      = require('express-session')
+compression  = require('compression')
 cookieParser = require('cookie-parser')
 redis        = require('redis')
 RedisStore   = require('connect-redis')(session)
@@ -48,6 +49,7 @@ app.use session(
   secret: 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
   store:   sessionStore
 )
+app.use compression()
 app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
