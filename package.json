@@ -15,7 +15,9 @@
     "url": "https://github.com/saks/staging_manager"
   },
   "dependencies": {
+    "basic-auth": "^1.0.0",
     "body-parser": "~1.0.0",
+    "buffer-equal-constant-time": "^1.0.1",
     "coffee-script": "^1.8.0",
     "compression": "^1.0.11",
     "connect-assets": "^4.3.0",
