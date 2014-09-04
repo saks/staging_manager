@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+if (process.env.NEW_RELIC_APP_NAME) {
+  require('newrelic')
+}
+
 var debug = require('debug')('staging_manager');
 var app = require('../app');
 
