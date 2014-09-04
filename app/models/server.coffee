@@ -56,6 +56,10 @@ ServerSchema.statics.recordDeployment = (params, callback) ->
       callback findError
       return
 
+    unless server
+      callback new Error "Cannot find server by host: `#{params.host}'"
+      return
+
     server.branch           = params.branch
     server.revision         = params.revision
     server.deployed_at      = Date Date.parse params.deployed_at
