@@ -12,7 +12,7 @@ routes       = require('./routes/index')
 users        = require('./routes/users')
 servers      = require('./routes/servers')
 authRoutes   = require('./routes/auth')
-deploymentsRoutes = require('./routes/deployments')
+apiRoutes    = require('./routes/api')
 session      = require('express-session')
 compression  = require('compression')
 cookieParser = require('cookie-parser')
@@ -54,7 +54,7 @@ app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
 app.use '/auth',    authRoutes
-app.use '/deployments', deploymentsRoutes
+app.use '/api',     apiRoutes
 app.use '/servers', servers
 
 #/ catch 404 and forward to error handler
