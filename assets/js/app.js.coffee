@@ -102,7 +102,7 @@ App.ServerController = Ember.ObjectController.extend(
       server.save().then (server) ->
         controller.set 'isLoading', false
         if server.get('locked_by_id') is App.currentUser.id
-          woof.success "Server #{server.get 'name'} was successfully locked."
+          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully locked."
         else
           woof.permanent "Cannot lock <strong>#{server.get 'name'}</strong>! " +
             "Server was locked by <strong>#{server.get 'locked_by_name'}</strong> earlier!"
@@ -124,7 +124,7 @@ App.ServerController = Ember.ObjectController.extend(
         server.set 'locked', false
         server.save().then (server) ->
           controller.set 'isLoading', false
-          woof.success "Server #{server.get 'name'} was successfully unlocked."
+          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully unlocked."
 )
 App.ServersController = Ember.ArrayController.extend(
   itemController: 'server'
