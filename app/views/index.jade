@@ -92,9 +92,9 @@ block content
           <dtitle>{{linkToServer this}}</dtitle>
           <hr/>
           <div class='cont'>
-            <p>deployed at: {{deployedAt}}</p>
-            <p>branch: {{branchName}}</p>
             <p>deployed by: {{deployedBy}}</p>
+            <p>at: {{formatDate deployedAt}}</p>
+            <p>branch: {{branchName}}</p>
             {{#if locked}}
               <p>locked by: {{locked_by_name}}</p>
               <p>at: {{formatDate locked_at}}</p>
