@@ -40,7 +40,7 @@ router.use isAuthenticated
 router.post '/', (request, response) ->
   Server.recordDeployment request.body, (error) ->
     if error
-      response.status(406).send error
+      response.status(406).send error.message
     else
       response.send 'OK'
 
