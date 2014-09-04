@@ -6,9 +6,12 @@ User     = mongoose.model 'User'
 
 isAuthenticated = (request, response, next) ->
   session = request.session
-  response.redirect '/' unless session and session.user_id
 
-  User.current session, (err, currentUser) ->
+  unless session.user_id
+    response.redirect '/'
+    return
+
+  User.current session.user_id, (err, currentUser) ->
     if not err and currentUser
       response.locals.currentUser = currentUser
       return next()

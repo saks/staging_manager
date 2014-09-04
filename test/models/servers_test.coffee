@@ -90,13 +90,12 @@ describe 'Server model', ->
       done()
 
   it 'should record deployment', (done) ->
-    host = 'foo.bar.buz'
+    host   = 'foo.bar.buz'
     params =
       host: host
       branch: 'master'
       deployed_by_name: 'me'
       deployed_at: new Date()
-
 
     Factory.create 'server', host: host, (server) ->
       expect(server.host).to.eql host
@@ -109,8 +108,6 @@ describe 'Server model', ->
           expect(error).to.not.exist
           expect(server.branch).to.eql params.branch
           expect(server.deployed_by_name).to.eql params.deployed_by_name
-
           expect(server.deployed_at).to.equalDate params.deployed_at
 
           done()
-
