@@ -245,6 +245,13 @@ h5 {
 	margin-top:30px;
 }
 
+.cont .branch {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .footer button {
   width: 100%;
   border-radius: 0;
