@@ -10,6 +10,7 @@ ServerSchema = new Schema
   locked_by_name: String
   locked_at:      Date
   branch:         String
+  revision:       String
   deployed_at:    Date
   deployed_by_id: Schema.Types.ObjectId
   deployed_by_name: String
@@ -48,5 +49,19 @@ ServerSchema.statics.toggleLock = (options, callback) ->
 
       server.save (saveError, updatedServer, numberAffected) ->
         callback saveError, updatedServer
+
+ServerSchema.statics.recordDeployment = (params, callback) ->
+  @findOne host: params.host, (findError, server) ->
+    if findError
+      callback findError
+      return
+
+    server.branch           = params.branch
+    server.revision         = params.revision
+    server.deployed_at      = Date Date.parse params.deployed_at
+    server.deployed_by_name = params.deployed_by_name
+
+    server.save (saveError) ->
+      callback saveError
 
 mongoose.model 'Server', ServerSchema
