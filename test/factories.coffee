@@ -9,4 +9,6 @@ Factory.define 'server', Server,
   ip_address: '8.8.8.8',
 
 Factory.define 'user', User,
-  name: 'foo-bar-user-name',
+  name: 'user-name'
+  email: 'user@email.com'
+  login: 'user-login'

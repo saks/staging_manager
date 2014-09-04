@@ -30,6 +30,18 @@ router.use isAuthenticated
 
 
 
+# GET return server state
+router.get '/server_state/:host', (request, response) ->
+  Server.findOne({ host: request.params.host }, (error, server) ->
+    if error
+      response.status(406).send error.message
+
+    unless server
+      response.status(406).send "Cannot find server by host: #{request.params.host}"
+
+    response.json server
+  )
+
 # POST create deployment
 # request params:
 # - host
@@ -37,11 +49,12 @@ router.use isAuthenticated
 # - revision
 # - deployed_at
 # - deployed_by_name
-router.post '/', (request, response) ->
+router.post '/deployments', (request, response) ->
   Server.recordDeployment request.body, (error) ->
     if error
       response.status(406).send error.message
     else
       response.send 'OK'
+
 
 module.exports = router

@@ -15,7 +15,8 @@ App.Server = DS.Model.extend
   revision:       attr('string')
   deployed_at:    attr('date')
   deployed_by_id: attr('string')
-  deployed_by_name: attr('string')
+  deployed_by_name:  attr('string')
+  deployed_by_login: attr('string')
 
 
 # woof again:

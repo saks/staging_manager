@@ -13,7 +13,8 @@ ServerSchema = new Schema
   revision:       String
   deployed_at:    Date
   deployed_by_id: Schema.Types.ObjectId
-  deployed_by_name: String
+  deployed_by_name:  String
+  deployed_by_login: String
 
 
 ServerSchema.options.toJSON = {
@@ -50,22 +51,22 @@ ServerSchema.statics.toggleLock = (options, callback) ->
       server.save (saveError, updatedServer, numberAffected) ->
         callback saveError, updatedServer
 
-ServerSchema.statics.recordDeployment = (params, callback) ->
+ServerSchema.statics.recordDeployment = (params, returnCallback) ->
   @findOne host: params.host, (findError, server) ->
-    if findError
-      callback findError
-      return
-
-    unless server
-      callback new Error "Cannot find server by host: `#{params.host}'"
-      return
+    return returnCallback findError if findError
+    return returnCallback new Error "Cannot find server by host: `#{params.host}'" unless server
 
     server.branch           = params.branch
     server.revision         = params.revision
     server.deployed_at      = Date Date.parse params.deployed_at
-    server.deployed_by_name = params.deployed_by_name
 
-    server.save (saveError) ->
-      callback saveError
+    mongoose.model('User').userByGithubLogin params.deployed_by_name, (error, user) ->
+      return returnCallback error if error
+
+      server.deployed_by_name  = user.verboseName()
+      server.deployed_by_login = user.login
+      server.deployed_by_id    = user.id
+
+      server.save returnCallback
 
 mongoose.model 'Server', ServerSchema

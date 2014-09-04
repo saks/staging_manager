@@ -70,9 +70,8 @@ class SMAuth
     callback = (error, response, body) ->
       if not error and response.statusCode is 200
         userData = JSON.parse(body)
-        userData.github_user_id = userData.id
 
-        if authObject.isUserAllowed userData.github_user_id
+        if authObject.isUserAllowed userData.id # which is github user id
           delete userData.id
 
           User.findOneAndUpdate({github_user_id: userData.github_user_id}, userData, { upsert: true }, (err, doc) ->

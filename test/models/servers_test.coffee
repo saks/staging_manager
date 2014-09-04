@@ -1,5 +1,6 @@
 app      = require "#{APP_ROOT}/app"
 require "#{APP_ROOT}/app/models/server"
+nock     = require 'nock'
 mongoose = require 'mongoose'
 Server   = mongoose.model 'Server'
 
@@ -90,11 +91,21 @@ describe 'Server model', ->
       done()
 
   it 'should record deployment', (done) ->
+    githubUser =
+      id:    123
+      name:  'user-name'
+      email: 'user@email.com'
+      login: 'user-login'
+
+    nock 'https://api.github.com'
+      .get "/users/#{githubUser.name}"
+      .reply 200, githubUser
+
     host   = 'foo.bar.buz'
     params =
       host: host
       branch: 'master'
-      deployed_by_name: 'me'
+      deployed_by_name: githubUser.name
       deployed_at: new Date()
 
     Factory.create 'server', host: host, (server) ->
@@ -106,6 +117,7 @@ describe 'Server model', ->
       Server.recordDeployment params, (error) ->
         Server.findById server.id, (findError, server) ->
           expect(error).to.not.exist
+
           expect(server.branch).to.eql params.branch
           expect(server.deployed_by_name).to.eql params.deployed_by_name
           expect(server.deployed_at).to.equalDate params.deployed_at
