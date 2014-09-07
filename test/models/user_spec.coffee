@@ -1,13 +1,8 @@
-app      = require "#{APP_ROOT}/app"
-require "#{APP_ROOT}/app/models/user"
 nock     = require 'nock'
 mongoose = require 'mongoose'
 User     = mongoose.model 'User'
 
 describe 'User model', ->
-  beforeEach (done) ->
-    User.collection.remove -> done()
-
   afterEach (done) ->
     nock.disableNetConnect()
     done()
@@ -80,20 +75,3 @@ describe 'User model', ->
         expect(user).have.property('email').eql githubUser.email
 
         done()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

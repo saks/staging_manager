@@ -1,25 +1,28 @@
 require './db'
 require './app/models/server'
 require './app/models/user'
-express      = require('express')
-logfmt       = require('logfmt')
-path         = require('path')
-favicon      = require('static-favicon')
-logger       = require('morgan')
-cookieParser = require('cookie-parser')
-bodyParser   = require('body-parser')
-routes       = require('./routes/index')
-users        = require('./routes/users')
-servers      = require('./routes/servers')
-authRoutes   = require('./routes/auth')
-apiRoutes    = require('./routes/api')
-session      = require('express-session')
-compression  = require('compression')
-cookieParser = require('cookie-parser')
-redis        = require('redis')
+
+# libs
+express      = require 'express'
+logfmt       = require 'logfmt'
+path         = require 'path'
+favicon      = require 'static-favicon'
+logger       = require 'morgan'
+cookieParser = require 'cookie-parser'
+bodyParser   = require 'body-parser'
+session      = require 'express-session'
+compression  = require 'compression'
+cookieParser = require 'cookie-parser'
+redis        = require 'redis'
 RedisStore   = require('connect-redis')(session)
 url          = require 'url'
-app          = express()
+
+# routes
+routes       = require './routes/index'
+users        = require './routes/users'
+servers      = require './routes/servers'
+authRoutes   = require './routes/auth'
+apiRoutes    = require './routes/api'
 
 
 # connect to redis
@@ -35,13 +38,15 @@ else
 sessionStore = new RedisStore client: redisClient
 
 # view engine setup
+app = express()
 app.set 'views', path.join(__dirname, 'app', 'views')
 app.set 'view engine', 'jade'
 
+# middlewares
 app.use compression threshold: false
 app.use require('connect-assets')()
 app.use favicon()
-app.use logger('dev')
+app.use logger('dev') if app.get('env') isnt 'test'
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
 app.use cookieParser('bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4')
@@ -82,7 +87,8 @@ if app.get('env') is 'development'
 # production error handler
 # no stacktraces leaked to user
 app.use (err, req, res, next) ->
-  app.use logfmt.requestLogger()
+  if app.get('env') isnt 'test'
+    app.use logfmt.requestLogger()
   res.status err.status or 500
   res.render 'error',
     message: err.message
