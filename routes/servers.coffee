@@ -5,6 +5,8 @@ Server   = mongoose.model 'Server'
 User     = mongoose.model 'User'
 
 isAuthenticated = (request, response, next) ->
+  return next() if 'test' == process.env.NODE_ENV
+
   session = request.session
 
   unless session.user_id
@@ -29,7 +31,10 @@ router.get '/', (request, response) ->
 # GET server by id
 router.get '/:id', (request, response) ->
   Server.findById request.params.id, (findError, server) ->
-    response.json server: server unless findError
+    if findError
+      response.status(404).json error: findError
+    else
+      response.json server: server
 
 # PUT update server model. Currently can only toggle lock.
 router.put '/:id', (request, response) ->

@@ -1,5 +1,3 @@
-app      = require "#{APP_ROOT}/app"
-require "#{APP_ROOT}/app/models/server"
 nock     = require 'nock'
 mongoose = require 'mongoose'
 Server   = mongoose.model 'Server'
@@ -29,7 +27,7 @@ describe 'Server model', ->
     Factory.create 'server', (server) ->
       Factory.create 'user', (user) ->
 
-        expect(server.locked).to.not.exist
+        expect(server.locked).to.be.false
         expect(server.locked_by_id).to.not.exist
         expect(server.locked_by_name).to.not.exist
 
@@ -103,16 +101,17 @@ describe 'Server model', ->
 
     host   = 'foo.bar.buz'
     params =
-      host: host
-      branch: 'master'
+      host:             host
+      branch:           'master'
       deployed_by_name: githubUser.name
-      deployed_at: new Date()
+      deployed_at:      new Date()
 
-    Factory.create 'server', host: host, (server) ->
+    initialServerState = host: host, branch: null, revision: null, deployed_by_name: null
+    Factory.create 'server', initialServerState, (server) ->
       expect(server.host).to.eql host
-      expect(server.branch).to.not.exist
-      expect(server.revision).to.not.exist
-      expect(server.deployed_by_name).to.not.exist
+      expect(server.branch).to.not.be.ok
+      expect(server.revision).to.not.be.ok
+      expect(server.deployed_by_name).to.not.be.ok
 
       Server.recordDeployment params, (error) ->
         Server.findById server.id, (findError, server) ->
