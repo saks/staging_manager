@@ -39,7 +39,7 @@ else
   redisClient = redis.createClient()
 
 
-sessionStore = new RedisStore client: redisClient
+sessionStore = new RedisStore client: redisClient, ttl: 172800
 
 # view engine setup
 app = express()
@@ -57,6 +57,7 @@ app.use bodyParser.urlencoded()
 app.use cookieParser('bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4')
 app.use session(
   key:    'app.session'
+  unset:  'destroy'
   secret: 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
   store:   sessionStore
 )

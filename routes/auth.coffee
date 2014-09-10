@@ -14,7 +14,7 @@ router.get '/signin', (req, res) ->
       res.redirect '/'
 
 router.get '/signout', (req, res) ->
-  delete req.session.user_id
+  delete req.session
   res.redirect '/'
 
 # Callback service parsing the authorization token and asking for the access token
