@@ -72,6 +72,7 @@ class SMAuth
         userData = JSON.parse(body)
 
         if authObject.isUserAllowed userData.id # which is github user id
+          userData.github_user_id = userData.id
           delete userData.id
 
           User.findOneAndUpdate({github_user_id: userData.github_user_id}, userData, { upsert: true }, (err, doc) ->
