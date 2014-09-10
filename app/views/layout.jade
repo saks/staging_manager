@@ -2,6 +2,7 @@ doctype html
 html
   head
     title= title
+    != newrelic.getBrowserTimingHeader()
     != css('application')
     if currentUser
       meta(name='current-user' content='#{JSON.stringify(currentUser)}')

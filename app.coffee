@@ -24,6 +24,10 @@ servers      = require './routes/servers'
 authRoutes   = require './routes/auth'
 apiRoutes    = require './routes/api'
 
+newrelic = if process.env.NEW_RELIC_LICENSE_KEY
+  require 'newrelic'
+else
+  { getBrowserTimingHeader: -> }
 
 # connect to redis
 if process.env.REDISTOGO_URL
@@ -39,6 +43,7 @@ sessionStore = new RedisStore client: redisClient
 
 # view engine setup
 app = express()
+app.locals.newrelic = newrelic
 app.set 'views', path.join(__dirname, 'app', 'views')
 app.set 'view engine', 'jade'
 
