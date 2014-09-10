@@ -39,6 +39,7 @@ describe '/servers route', ->
           expect(server.locked).to.be.false
           expect(server.locked_by_id).to.not.exist
           expect(server.locked_by_name).to.not.exist
+          expect(server.locked_by_login).to.not.exist
 
 
           request(app)
@@ -50,11 +51,13 @@ describe '/servers route', ->
               expect(res.body.server.locked).to.be.true
               expect(res.body.server.locked_by_id).to.eql user.id
               expect(res.body.server.locked_by_name).to.eql user.verboseName()
+              expect(res.body.server.locked_by_login).to.eql user.login
 
               Server.findById server.id, (err, updatedServer) ->
                 expect(updatedServer.locked).to.be.true
                 expect(updatedServer.locked_by_id.toString()).to.eql user.id
                 expect(updatedServer.locked_by_name).to.eql user.verboseName()
+                expect(updatedServer.locked_by_login).to.eql user.login
 
               return
 
@@ -85,7 +88,7 @@ describe '/servers route', ->
             [
               'name', 'ip_address', 'locked', 'locked_at', 'host', 'locked_by_id', 'locked_by_name',
               'branch', 'revision', 'deployed_at', 'deployed_by_id', 'deployed_by_name',
-              'deployed_by_login'
+              'deployed_by_login', 'locked_by_login'
             ].forEach (attrName) ->
               expect(server).to.have.property attrName
 

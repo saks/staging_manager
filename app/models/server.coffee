@@ -8,6 +8,7 @@ ServerSchema = new Schema
   locked:         Boolean
   locked_by_id:   Schema.Types.ObjectId
   locked_by_name: String
+  locked_by_login: String
   locked_at:      Date
   branch:         String
   revision:       String
@@ -42,11 +43,16 @@ ServerSchema.statics.toggleLock = (options, callback) ->
         return
 
       if server.locked
-        server.locked_by_id   = options.user.id
-        server.locked_by_name = options.user.verboseName()
-        server.locked_at      = new Date()
+        server.locked_by_id    = options.user.id
+        server.locked_by_name  = options.user.verboseName()
+        server.locked_by_login = options.user.login
+        server.locked_at       = new Date()
       else
-        server.locked_by_id = server.locked_by_name = server.locked_at = undefined
+        server.locked_by_id      =
+          server.locked_by_name  =
+          server.locked_by_login =
+          server.locked_at       =
+          undefined
 
       server.save (saveError, updatedServer, numberAffected) ->
         callback saveError, updatedServer

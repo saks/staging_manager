@@ -18,6 +18,7 @@ describe 'Server model', ->
             expect(unlockedServer.locked).to.eql false
             expect(unlockedServer.locked_by_id).to.be.undefined
             expect(unlockedServer.locked_by_name).to.be.undefined
+            expect(unlockedServer.locked_by_login).to.be.undefined
             expect(unlockedServer.locked_at).to.be.undefined
 
             done()
@@ -30,6 +31,7 @@ describe 'Server model', ->
         expect(server.locked).to.be.false
         expect(server.locked_by_id).to.not.exist
         expect(server.locked_by_name).to.not.exist
+        expect(server.locked_by_login).to.not.exist
 
         options = id: server.id, locked: true, user: user
 
@@ -39,6 +41,7 @@ describe 'Server model', ->
 
           expect(server.locked).to.eql                  options.locked
           expect(server.locked_by_name).to.eql          user.verboseName()
+          expect(server.locked_by_login).to.eql         user.login
           expect(server.locked_by_id.toString()).to.eql user.id.toString()
           expect(server.locked_at.toString()).to.eql    new Date().toString()
 
@@ -48,11 +51,17 @@ describe 'Server model', ->
     Factory.create 'user', (alreadyLockedByUser) ->
       Factory.create 'user', (user) ->
 
-        initialAttrs = locked: true, locked_by_id: alreadyLockedByUser.id, locked_by_name: 'foo'
+        initialAttrs =
+          locked:          true
+          locked_by_id:    alreadyLockedByUser.id
+          locked_by_name:  'foo'
+          locked_by_login: 'bar'
+
         Factory.create 'server', initialAttrs, (server) ->
           expect(server.locked).to.eql         initialAttrs.locked
           expect(server.locked_by_id.toString()).to.eql   initialAttrs.locked_by_id.toString()
           expect(server.locked_by_name).to.eql initialAttrs.locked_by_name
+          expect(server.locked_by_login).to.eql initialAttrs.locked_by_login
 
           options = id: server.id, locked: true, user: user
           Server.toggleLock options, (lockError, updatedServer) ->
@@ -61,6 +70,7 @@ describe 'Server model', ->
             expect(updatedServer.locked).to.eql                  initialAttrs.locked
             expect(updatedServer.locked_by_id.toString()).to.eql initialAttrs.locked_by_id.toString()
             expect(updatedServer.locked_by_name).to.eql          initialAttrs.locked_by_name
+            expect(updatedServer.locked_by_login).to.eql         initialAttrs.locked_by_login
 
           done()
 

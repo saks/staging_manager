@@ -12,6 +12,7 @@ Factory.define 'server', Server,
   host:              'staging1.net'
   locked_by_id:      null
   locked_by_name:    null
+  locked_by_login:   null
   branch:            'master'
   revision:          '123'
   deployed_at:       new Date()
