@@ -5,7 +5,11 @@ Server   = mongoose.model 'Server'
 User     = mongoose.model 'User'
 
 isAuthenticated = (request, response, next) ->
-  return next() if 'test' == process.env.NODE_ENV
+  if 'test' == process.env.NODE_ENV
+    return User.findOne (err, user) ->
+      response.locals.currentUser = user
+      return next()
+
 
   session = request.session
 
@@ -38,10 +42,12 @@ router.get '/:id', (request, response) ->
 
 # PUT update server model. Currently can only toggle lock.
 router.put '/:id', (request, response) ->
+  server = request.body.server or {}
+
   options =
-    id: request.params.id,
-    locked: request.body.server.locked,
-    user: response.locals.currentUser
+    id:     request.params.id
+    locked: server.locked
+    user:   response.locals.currentUser
 
   Server.toggleLock options, (error, server) ->
     if error
