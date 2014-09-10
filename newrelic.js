@@ -8,7 +8,8 @@ exports.config = {
   /**
    * Array of application names.
    */
-  // app_name : ['My Application'],
+  app_name : ['Staging Manager'],
+  capture_params: true,
   /**
    * Your New Relic license key.
    */
