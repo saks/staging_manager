@@ -13,7 +13,7 @@ router.get '/', (request, response) ->
     if err
       response.send err.message
     else
-      response.render 'index', title: 'Express', currentUser: currentUser
+      response.render 'index', title: 'Staging Manager', currentUser: currentUser
 
 # GET heartbeat
 router.get '/heartbeat', (request, response) ->
