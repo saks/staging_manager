@@ -2,6 +2,13 @@ App = Ember.Application.create()
 
 ## Models:
 attr = DS.attr
+socket = io.connect()
+
+socket.on 'servers/update', (data) ->
+  Ember.Instrumentation.instrument("signalr.notificationOccured", data)
+
+
+
 
 App.Server = DS.Model.extend
   name:           attr('string')
@@ -65,13 +72,19 @@ App.IndexRoute = Ember.Route.extend(
       @render 'login'
 )
 App.ServersRoute = Ember.Route.extend(
-  activate: ->
+  setupController: (controller, model) ->
     routeObject = @
-    socket = io.connect()
-    socket.on 'servers/update', (data) ->
-      routeObject.store.push('Server', data.server)
-      console.log data
+    @_super(controller, model)
 
+
+    Ember.Instrumentation.subscribe("signalr.notificationOccured", {
+      before: (name, timestamp, payload) ->
+        routeObject.store.push 'Server', payload.server
+
+        controller._subControllers.forEach (controller) ->
+          controller.send('signalrNotificationOccured', payload)
+      after: ->
+    })
 
 
   model: -> @store.find 'server'
@@ -104,11 +117,18 @@ App.ServerController = Ember.ObjectController.extend(
   lockedByCurrentUser: lockedByCurrentUser.property 'locked_by_id'
 
   actions:
+    signalrNotificationOccured: (context) ->
+      controllerObject = @
+      if @model.get('id') is context.server.id
+        @set 'isLoading', true
+        Ember.run.later -> controllerObject.set 'isLoading', false
+        , 200
+
     lock: (server) ->
       woof       = @woof
       controller = @
       @set 'isLoading', true
-      io.connect().emit '/servers/lock', id: server.get('id')
+      socket.emit '/servers/lock', id: server.get('id')
 
       # server.set 'locked', true
       # server.save().then (server) ->
@@ -126,17 +146,18 @@ App.ServerController = Ember.ObjectController.extend(
 
       wasLockedBy = server.get 'locked_by_id'
       @set 'isLoading', true
-      server.reload().then (server) ->
-        # if somebody updated server before
-        if server.get('locked_by_id') isnt wasLockedBy
-          woof.warning 'Somebody changes server settigns before you.'
-          controller.set 'isLoading', false
-          return
-
-        server.set 'locked', false
-        server.save().then (server) ->
-          controller.set 'isLoading', false
-          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully unlocked."
+      socket.emit '/servers/unlock', id: server.get('id')
+      # server.reload().then (server) ->
+      #   # if somebody updated server before
+      #   if server.get('locked_by_id') isnt wasLockedBy
+      #     woof.warning 'Somebody changes server settigns before you.'
+      #     controller.set 'isLoading', false
+      #     return
+      #
+      #   server.set 'locked', false
+      #   server.save().then (server) ->
+      #     controller.set 'isLoading', false
+      #     woof.success "Server <strong>#{server.get 'name'}</strong> was successfully unlocked."
 )
 App.ServersController = Ember.ArrayController.extend(
   itemController: 'server'
