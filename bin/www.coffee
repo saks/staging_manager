@@ -16,7 +16,9 @@ server = app.listen(app.get('port'), ->
   return
 )
 io = require('socket.io').listen(server)
-User = require('mongoose').model 'User'
+mongoose = require 'mongoose'
+User = mongoose.model 'User'
+Server = mongoose.model 'Server'
 
 sessionStore = app.locals.sessionStore
 cookieParser = app.locals.cookieParser
@@ -65,7 +67,32 @@ io.set('authorization', (data, callback) ->
 
 
 io.on('connection', (socket) ->
-  console.log 'connected'
+  request     = socket.conn.request
+  currentUser = request.currentUser
+  console.log "connected user #{currentUser.verboseName()}"
+
+  socket.on '/servers/lock', (data) ->
+    console.log "lock server #{data}"
+    options = id: data.id, locked: true, user: currentUser
+
+    Server.toggleLock options, (error, server) ->
+      if error
+        # TODO: socket.emit 'news', server: server
+      else
+        socket.emit 'servers/update', server: server
+        socket.broadcast.emit 'servers/update', server: server
+
+  socket.on '/servers/unlock', (data) ->
+    console.log "unlock server #{data}"
+    options = id: data.id, locked: false, user: currentUser
+
+    Server.toggleLock options, (error, server) ->
+      if error
+        # TODO: socket.emit 'news', server: server
+      else
+        socket.emit 'servers/update', server: server
+        socket.broadcast.emit 'servers/update', server: server
+
   # sender = setInterval(->
   #   socket.emit('myCustomEvent', new Date().getTime())
   # , 1000)
