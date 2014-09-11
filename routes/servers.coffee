@@ -53,6 +53,7 @@ router.put '/:id', (request, response) ->
     if error
       response.status(406).json error: error
     else
+      request.app.locals.socket.broadcast.emit 'servers/update', server: server
       response.json { server: server }
 
 module.exports = router

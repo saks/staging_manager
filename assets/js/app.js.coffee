@@ -65,6 +65,15 @@ App.IndexRoute = Ember.Route.extend(
       @render 'login'
 )
 App.ServersRoute = Ember.Route.extend(
+  activate: ->
+    routeObject = @
+    socket = io.connect()
+    socket.on 'servers/update', (data) ->
+      routeObject.store.push('Server', data.server)
+      console.log data
+
+
+
   model: -> @store.find 'server'
   actions:
     tryUnlock: (server, controller) ->
@@ -99,15 +108,16 @@ App.ServerController = Ember.ObjectController.extend(
       woof       = @woof
       controller = @
       @set 'isLoading', true
+      io.connect().emit '/servers/lock', id: server.get('id')
 
-      server.set 'locked', true
-      server.save().then (server) ->
-        controller.set 'isLoading', false
-        if server.get('locked_by_id') is App.currentUser.id
-          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully locked."
-        else
-          woof.permanent "Cannot lock <strong>#{server.get 'name'}</strong>! " +
-            "Server was locked by <strong>#{server.get 'locked_by_name'}</strong> earlier!"
+      # server.set 'locked', true
+      # server.save().then (server) ->
+      #   controller.set 'isLoading', false
+      #   if server.get('locked_by_id') is App.currentUser.id
+      #     woof.success "Server <strong>#{server.get 'name'}</strong> was successfully locked."
+      #   else
+      #     woof.permanent "Cannot lock <strong>#{server.get 'name'}</strong>! " +
+      #       "Server was locked by <strong>#{server.get 'locked_by_name'}</strong> earlier!"
 
     unlock: (server) ->
       @send 'closeModal' # in the case it was opened
