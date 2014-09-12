@@ -29,6 +29,7 @@ ServerSchema.options.toJSON = {
 ServerSchema.statics.lock = (id, user, callback) ->
   @findById id, (findError, server) ->
     return callback(findError, server) if findError
+    return callback(new Error('Cannot find server')) unless server
 
     server.locked = true
 
@@ -50,6 +51,7 @@ ServerSchema.statics.lock = (id, user, callback) ->
 ServerSchema.statics.unlock = (id, user, callback) ->
   @findById id, (findError, server) ->
     return callback(findError, server) if findError
+    return callback(new Error('Cannot find server')) unless server
 
     server.locked = false
 
