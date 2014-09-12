@@ -39,6 +39,7 @@ passport.deserializeUser((id, done) ->
 router.get '/signin', passport.authenticate('github')
 
 router.get '/signout', (req, res) ->
+  req.app.locals.socketRegistry.pop req.user.id
   req.logout()
   res.redirect '/'
 
