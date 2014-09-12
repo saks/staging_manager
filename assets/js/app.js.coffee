@@ -1,7 +1,28 @@
+IO = null
+
+
+Ember.Application.initializer({
+  name: 'namedInitializer',
+  initialize: (container, application) ->
+    IO = io.connect()
+
+    IO.on '/servers/update', (data) ->
+      Ember.Instrumentation.instrument('signal.servers.update', data)
+
+    IO.on '/servers/index', (data) ->
+      Ember.Instrumentation.instrument('signal.servers.index', data)
+
+    IO.on '/error', (data) ->
+      document.location.reload()
+})
+
+
+
 App = Ember.Application.create()
 
 ## Models:
 attr = DS.attr
+
 
 App.Server = DS.Model.extend
   name:           attr('string')
@@ -65,7 +86,29 @@ App.IndexRoute = Ember.Route.extend(
       @render 'login'
 )
 App.ServersRoute = Ember.Route.extend(
-  model: -> @store.find 'server'
+  setupController: (controller, model) ->
+    routeObject = @
+    @_super(controller, model)
+
+
+    Ember.Instrumentation.subscribe('signal.servers.update', {
+      before: (name, timestamp, payload) ->
+        routeObject.store.push 'Server', payload.server
+
+        controller._subControllers.forEach (controller) ->
+          controller.send('update', payload)
+      after: ->
+    })
+
+    Ember.Instrumentation.subscribe('signal.servers.index', {
+      before: (name, timestamp, payload) ->
+        controller.send 'loadModels', payload
+      after: ->
+    })
+
+
+
+  model: -> @store.all 'server'
   actions:
     tryUnlock: (server, controller) ->
       @render 'confirmUnlock',
@@ -83,53 +126,72 @@ App.ServersRoute = Ember.Route.extend(
 lockedByCurrentUser = -> @get('locked_by_id') is App.currentUser.id
 App.ServerController = Ember.ObjectController.extend(
   isLoading: false
-  branchName: (->
-    @get('branch') or 'n/a'
-  ).property 'branch'
-  deployedAt: (->
-    @get('deployed_at') or 'n/a'
-  ).property 'deployed_at'
-  deployedBy: (->
-    @get('deployed_by_name') or 'n/a'
-  ).property 'deployed_by_name'
+  changeAttempt: null
+
+  branchName: (-> @get('branch') or 'n/a'          ).property 'branch'
+
+  deployedAt: (-> @get('deployed_at') or 'n/a'     ).property 'deployed_at'
+
+  deployedBy: (-> @get('deployed_by_name') or 'n/a').property 'deployed_by_name'
+
   lockedByCurrentUser: lockedByCurrentUser.property 'locked_by_id'
 
-  actions:
-    lock: (server) ->
-      woof       = @woof
-      controller = @
-      @set 'isLoading', true
+  wasChangedByMe: ->
+    changeAttempt = @get 'changeAttempt'
+    (changeAttempt.serverId is @model.get('id')) and (changeAttempt.userId is @model.get('locked_by_id'))
 
-      server.set 'locked', true
-      server.save().then (server) ->
-        controller.set 'isLoading', false
-        if server.get('locked_by_id') is App.currentUser.id
-          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully locked."
-        else
-          woof.permanent "Cannot lock <strong>#{server.get 'name'}</strong>! " +
-            "Server was locked by <strong>#{server.get 'locked_by_name'}</strong> earlier!"
+  tryingToChangeServer: ->
+    !!@get('changeAttempt')
+
+  startAttemptToChange: ->
+    @set 'isLoading', true
+    @set 'changeAttempt', serverId: @model.get('id'), userId: App.currentUser.id
+
+  actions:
+    update: (context) ->
+      controllerObject = @
+      model            = @model
+      woof             = @woof
+
+      if model.get('id') is context.server.id
+        @set 'isLoading', true
+        Ember.run.later (->
+          controllerObject.set 'isLoading', false
+
+          if model.get('locked')
+            if controllerObject.tryingToChangeServer()
+              if controllerObject.wasChangedByMe()
+                woof.success "Server <strong>#{model.get 'name'}</strong> was successfully locked."
+              else
+                woof.permanent "Cannot lock <strong>#{model.get 'name'}</strong>! " +
+                  "Server was locked by <strong>#{model.get 'locked_by_name'}</strong> earlier!"
+              controllerObject.set 'changeAttempt', null
+
+            else
+              woof.info "Server <strong>#{model.get 'name'}</strong> was locked."
+          else
+            if controllerObject.tryingToChangeServer()
+              woof.success "Server <strong>#{model.get 'name'}</strong> was successfully unlocked."
+              controllerObject.set 'changeAttempt', null
+            else
+              woof.info "Server <strong>#{model.get 'name'}</strong> was unlocked."
+
+        ), 200
+
+    lock: (server) ->
+      @startAttemptToChange()
+      IO.emit '/servers/lock', id: server.get('id')
 
     unlock: (server) ->
       @send 'closeModal' # in the case it was opened
-      woof       = @woof
-      controller = @
-
-      wasLockedBy = server.get 'locked_by_id'
-      @set 'isLoading', true
-      server.reload().then (server) ->
-        # if somebody updated server before
-        if server.get('locked_by_id') isnt wasLockedBy
-          woof.warning 'Somebody changes server settigns before you.'
-          controller.set 'isLoading', false
-          return
-
-        server.set 'locked', false
-        server.save().then (server) ->
-          controller.set 'isLoading', false
-          woof.success "Server <strong>#{server.get 'name'}</strong> was successfully unlocked."
+      @startAttemptToChange()
+      IO.emit '/servers/unlock', id: @model.get('id')
 )
 App.ServersController = Ember.ArrayController.extend(
   itemController: 'server'
+  actions:
+    loadModels: (pushData) ->
+      @store.pushPayload 'server', pushData
 )
 App.ApplicationRoute = Ember.Route.extend(
   actions:

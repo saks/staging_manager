@@ -9,12 +9,10 @@ describe 'Server model', ->
   it 'should unlock server if requested', (done) ->
     Factory.create 'server', (server) ->
       Factory.create 'user', (user) ->
-        lockOptions = id: server.id, locked: true, user: user
-        Server.toggleLock lockOptions, (lockError, lockedServer) ->
+        Server.lock server.id, user, (lockError, lockedServer) ->
           expect(lockedServer.locked).to.eql true
 
-          unlockOptions = id: lockedServer.id, locked: false, user: user
-          Server.toggleLock unlockOptions, (lockError, unlockedServer) ->
+          Server.unlock lockedServer.id, user, (lockError, unlockedServer) ->
             expect(unlockedServer.locked).to.eql false
             expect(unlockedServer.locked_by_id).to.be.undefined
             expect(unlockedServer.locked_by_name).to.be.undefined
@@ -33,13 +31,11 @@ describe 'Server model', ->
         expect(server.locked_by_name).to.not.exist
         expect(server.locked_by_login).to.not.exist
 
-        options = id: server.id, locked: true, user: user
-
-        Server.toggleLock options, (lockError, server) ->
+        Server.lock server.id, user, (lockError, server) ->
           expect(lockError).to.not.exist
           expect(server.locked).to.exist
 
-          expect(server.locked).to.eql                  options.locked
+          expect(server.locked).to.eql                  true
           expect(server.locked_by_name).to.eql          user.verboseName()
           expect(server.locked_by_login).to.eql         user.login
           expect(server.locked_by_id.toString()).to.eql user.id.toString()
@@ -63,9 +59,7 @@ describe 'Server model', ->
           expect(server.locked_by_name).to.eql initialAttrs.locked_by_name
           expect(server.locked_by_login).to.eql initialAttrs.locked_by_login
 
-          options = id: server.id, locked: true, user: user
-          Server.toggleLock options, (lockError, updatedServer) ->
-
+          Server.lock server.id, user, (lockError, updatedServer) ->
             expect(lockError).to.not.exist
             expect(updatedServer.locked).to.eql                  initialAttrs.locked
             expect(updatedServer.locked_by_id.toString()).to.eql initialAttrs.locked_by_id.toString()
@@ -75,7 +69,7 @@ describe 'Server model', ->
           done()
 
   it 'should return error if cannot find server', (done) ->
-    Server.toggleLock id: 123, locked: true, (error, server) ->
+    Server.lock 123, {}, (error, server) ->
       expect(error).to.exist
       expect(server).to.not.exist
 

@@ -2,25 +2,24 @@ require './db'
 require './app/models/server'
 require './app/models/user'
 
+
 # libs
 express      = require 'express'
 logfmt       = require 'logfmt'
 path         = require 'path'
 favicon      = require 'static-favicon'
 logger       = require 'morgan'
-cookieParser = require 'cookie-parser'
 bodyParser   = require 'body-parser'
 session      = require 'express-session'
 compression  = require 'compression'
-cookieParser = require 'cookie-parser'
+cookieParser = require('cookie-parser')(process.env.SESSION_SECRET)
 redis        = require 'redis'
 RedisStore   = require('connect-redis')(session)
 url          = require 'url'
+passport     = require 'passport'
 
 # routes
 routes       = require './routes/index'
-users        = require './routes/users'
-servers      = require './routes/servers'
 authRoutes   = require './routes/auth'
 apiRoutes    = require './routes/api'
 
@@ -54,19 +53,26 @@ app.use favicon()
 app.use logger('dev') if app.get('env') isnt 'test'
 app.use bodyParser.json()
 app.use bodyParser.urlencoded()
-app.use cookieParser('bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4')
+app.use cookieParser
 app.use session(
-  key:    'app.session'
+  key:    'express.session'
   unset:  'destroy'
-  secret: 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
-  store:   sessionStore
+  secret: process.env.SESSION_SECRET
+  store:  sessionStore
 )
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes
 app.use '/auth',    authRoutes
 app.use '/api',     apiRoutes
-app.use '/servers', servers
+
+
+app.locals.cookieParser = cookieParser
+app.locals.sessionStore = sessionStore
+
 
 #/ catch 404 and forward to error handler
 app.use (req, res, next) ->
