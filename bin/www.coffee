@@ -21,7 +21,7 @@ Server = mongoose.model 'Server'
 sessionStore = app.locals.sessionStore
 cookieParser = require('cookie-parser')
 
-passportSocketIo = require("passport.socketio")
+passportSocketIo = require 'passport.socketio'
 
 onAuthorizeSuccess = (data, accept) ->
   console.log 'auth success'
@@ -62,32 +62,30 @@ socketRegistry = app.locals.socketRegistry = new SocketRegistry
 io.on('connection', (socket) ->
   request     = socket.conn.request
   currentUser = request.user
+
   socketRegistry.push currentUser.id, socket
   console.log "connected user #{currentUser.verboseName()}"
 
+  Server.find().sort('name').exec (err, document) ->
+    socket.emit '/servers/index', servers: document
+
+
+  # try to unlock server by it's id
   socket.on '/servers/lock', (data) ->
-    console.log "lock server #{data}"
     Server.lock data.id, currentUser, (error, server) ->
       if error
-        # TODO: socket.emit 'news', server: server
+        socket.emit '/error'
       else
-        socket.emit 'servers/update', server: server
-        socket.broadcast.emit 'servers/update', server: server
+        socket.emit '/servers/update', server: server
+        socket.broadcast.emit '/servers/update', server: server
 
+
+  # try to lock server by it's id
   socket.on '/servers/unlock', (data) ->
-    console.log "unlock server #{data}"
     Server.unlock data.id, currentUser, (error, server) ->
       if error
-        # TODO: socket.emit 'news', server: server
+        socket.emit '/error'
       else
-        socket.emit 'servers/update', server: server
-        socket.broadcast.emit 'servers/update', server: server
-
-  # sender = setInterval(->
-  #   socket.emit('myCustomEvent', new Date().getTime())
-  # , 1000)
-  #
-  # socket.on('disconnect', ->
-  #   clearInterval(sender)
-  # )
+        socket.emit '/servers/update', server: server
+        socket.broadcast.emit '/servers/update', server: server
 )
