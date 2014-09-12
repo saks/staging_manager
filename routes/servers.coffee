@@ -4,27 +4,8 @@ mongoose = require 'mongoose'
 Server   = mongoose.model 'Server'
 User     = mongoose.model 'User'
 
-isAuthenticated = (request, response, next) ->
-  if 'test' == process.env.NODE_ENV
-    return User.findOne (err, user) ->
-      response.locals.currentUser = user
-      return next()
-
-
-  session = request.session
-
-  unless session.passport
-    return response.redirect '/'
-
-  User.current session.passport.user.id, (err, currentUser) ->
-    if not err and currentUser
-      response.locals.currentUser = currentUser
-      return next()
-    else
-      response.redirect '/'
-
-
-router.use isAuthenticated
+router.use (request, response, next) ->
+  if request.isAuthenticated() then next() else response.redirect('/')
 
 # GET servers list as json
 router.get '/', (request, response) ->
@@ -46,7 +27,7 @@ router.put '/:id', (request, response) ->
   options =
     id:     request.params.id
     locked: server.locked
-    user:   response.locals.currentUser
+    user:   response.user
 
   Server.toggleLock options, (error, server) ->
     if error

@@ -1,6 +1,3 @@
-# unless process.env.COOKIE_SECRET
-#   process.env.COOKIE_SECRET = 'bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4'
-
 unless process.env.SESSION_SECRET
   process.env.SESSION_SECRET = 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
 
@@ -15,6 +12,7 @@ server = app.listen(app.get('port'), ->
   debug 'Express server listening on port ' + server.address().port
   return
 )
+passport = require 'passport'
 io = require('socket.io').listen(server)
 mongoose = require 'mongoose'
 User = mongoose.model 'User'
@@ -33,16 +31,8 @@ onAuthorizeFail = (data, message, error, accept) ->
   console.log message, error
   console.log 'auth fail'
 
-passportStub = {
-  _userProperty:   'user'
-  _key:            'passport'
-  deserializeUser: (user, callback) ->
-    User.current user.id, (err, currentUser) ->
-      callback err, currentUser
-}
-
 io.use(passportSocketIo.authorize({
-  passport:     passportStub,
+  passport:     passport,
   cookieParser: cookieParser,
   key:         EXPRESS_SID_KEY,       # the name of the cookie where express/connect stores its session_id
   secret:      process.env.SESSION_SECRET,    # the session_secret to parse the cookie
@@ -54,7 +44,7 @@ io.use(passportSocketIo.authorize({
 
 io.on('connection', (socket) ->
   request     = socket.conn.request
-  currentUser = request[passportStub._userProperty]
+  currentUser = request.user
   console.log "connected user #{currentUser.verboseName()}"
 
   socket.on '/servers/lock', (data) ->
