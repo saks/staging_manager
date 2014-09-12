@@ -7,11 +7,14 @@ User     = mongoose.model 'User'
 
 # Initial page redirecting to Github
 router.get '/signin', (req, res) ->
-  User.current req.session, (error, currentUser) ->
-    if error or not currentUser
-      res.redirect SMAuth.authorization_uri
-    else
-      res.redirect '/'
+  if req.session.passport
+    User.current req.session.passport.user.id, (error, currentUser) ->
+      if error or not currentUser
+        res.redirect SMAuth.authorization_uri
+      else
+        res.redirect '/'
+  else
+    res.redirect SMAuth.authorization_uri
 
 router.get '/signout', (req, res) ->
   delete req.session
@@ -23,7 +26,8 @@ router.get '/callback', (req, res) ->
   code = req.query.code
 
   new SMAuth code, (error, user) ->
-    session.user_id = user.id unless error
+    unless error
+      session.passport = { user: { id: user.id } }
     res.redirect '/'
 
 

@@ -9,11 +9,15 @@ SMAuth   = require './../lib/smauth'
 router.get '/', (request, response) ->
   session = request.session
 
-  User.current session.user_id, (err, currentUser) ->
-    if err
-      response.send err.message
-    else
-      response.render 'index', title: 'Express', currentUser: currentUser
+  if session.passport
+    User.current session.passport.user.id, (err, currentUser) ->
+      if err
+        response.send err.message
+      else
+        response.render 'index', title: 'Express', currentUser: currentUser
+  else
+    response.render 'index', title: 'Express'
+
 
 # GET heartbeat
 router.get '/heartbeat', (request, response) ->
