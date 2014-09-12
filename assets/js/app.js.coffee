@@ -5,9 +5,7 @@ attr = DS.attr
 socket = io.connect()
 
 socket.on 'servers/update', (data) ->
-  Ember.Instrumentation.instrument("signalr.notificationOccured", data)
-
-
+  Ember.Instrumentation.instrument('signal.servers.update', data)
 
 
 App.Server = DS.Model.extend
@@ -77,12 +75,12 @@ App.ServersRoute = Ember.Route.extend(
     @_super(controller, model)
 
 
-    Ember.Instrumentation.subscribe("signalr.notificationOccured", {
+    Ember.Instrumentation.subscribe('signal.servers.update', {
       before: (name, timestamp, payload) ->
         routeObject.store.push 'Server', payload.server
 
         controller._subControllers.forEach (controller) ->
-          controller.send('signalrNotificationOccured', payload)
+          controller.send('update', payload)
       after: ->
     })
 
@@ -105,24 +103,21 @@ App.ServersRoute = Ember.Route.extend(
 lockedByCurrentUser = -> @get('locked_by_id') is App.currentUser.id
 App.ServerController = Ember.ObjectController.extend(
   isLoading: false
-  branchName: (->
-    @get('branch') or 'n/a'
-  ).property 'branch'
-  deployedAt: (->
-    @get('deployed_at') or 'n/a'
-  ).property 'deployed_at'
-  deployedBy: (->
-    @get('deployed_by_name') or 'n/a'
-  ).property 'deployed_by_name'
+
+  branchName: (-> @get('branch') or 'n/a'          ).property 'branch'
+
+  deployedAt: (-> @get('deployed_at') or 'n/a'     ).property 'deployed_at'
+
+  deployedBy: (-> @get('deployed_by_name') or 'n/a').property 'deployed_by_name'
+
   lockedByCurrentUser: lockedByCurrentUser.property 'locked_by_id'
 
   actions:
-    signalrNotificationOccured: (context) ->
+    update: (context) ->
       controllerObject = @
       if @model.get('id') is context.server.id
         @set 'isLoading', true
-        Ember.run.later -> controllerObject.set 'isLoading', false
-        , 200
+        Ember.run.later (-> controllerObject.set 'isLoading', false), 200
 
     lock: (server) ->
       woof       = @woof
