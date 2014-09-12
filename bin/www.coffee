@@ -59,9 +59,7 @@ io.on('connection', (socket) ->
 
   socket.on '/servers/lock', (data) ->
     console.log "lock server #{data}"
-    options = id: data.id, locked: true, user: currentUser
-
-    Server.toggleLock options, (error, server) ->
+    Server.lock data.id, currentUser, (error, server) ->
       if error
         # TODO: socket.emit 'news', server: server
       else
@@ -70,9 +68,7 @@ io.on('connection', (socket) ->
 
   socket.on '/servers/unlock', (data) ->
     console.log "unlock server #{data}"
-    options = id: data.id, locked: false, user: currentUser
-
-    Server.toggleLock options, (error, server) ->
+    Server.unlock data.id, currentUser, (error, server) ->
       if error
         # TODO: socket.emit 'news', server: server
       else

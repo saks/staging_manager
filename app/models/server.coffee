@@ -26,33 +26,44 @@ ServerSchema.options.toJSON = {
     ret
 }
 
-# options: { id: <server model id>, locked: <boolean>, user: <current user> }
-ServerSchema.statics.toggleLock = (options, callback) ->
-  @findById options.id, (findError, server) ->
-    if findError
-      callback findError, server
-      return
+ServerSchema.statics.lock = (id, user, callback) ->
+  @findById id, (findError, server) ->
+    return callback(findError, server) if findError
 
-    server.locked = options.locked
+    server.locked = true
 
     server.save (saveError, updatedServer, numberAffected) ->
       wasUpdated = 1 is numberAffected
 
       if (not wasUpdated) or saveError
-        callback saveError, updatedServer
-        return
+        return callback saveError, updatedServer
 
       if server.locked
-        server.locked_by_id    = options.user.id
-        server.locked_by_name  = options.user.verboseName()
-        server.locked_by_login = options.user.login
+        server.locked_by_id    = user.id
+        server.locked_by_name  = user.verboseName()
+        server.locked_by_login = user.login
         server.locked_at       = new Date()
-      else
-        server.locked_by_id      =
-          server.locked_by_name  =
-          server.locked_by_login =
-          server.locked_at       =
-          undefined
+
+      server.save (saveError, updatedServer, numberAffected) ->
+        callback saveError, updatedServer
+
+ServerSchema.statics.unlock = (id, user, callback) ->
+  @findById id, (findError, server) ->
+    return callback(findError, server) if findError
+
+    server.locked = false
+
+    server.save (saveError, updatedServer, numberAffected) ->
+      wasUpdated = 1 is numberAffected
+
+      if (not wasUpdated) or saveError
+        return callback saveError, updatedServer
+
+      server.locked_by_id      =
+        server.locked_by_name  =
+        server.locked_by_login =
+        server.locked_at       =
+        undefined
 
       server.save (saveError, updatedServer, numberAffected) ->
         callback saveError, updatedServer
