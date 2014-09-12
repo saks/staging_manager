@@ -16,6 +16,7 @@ cookieParser = require('cookie-parser')(process.env.SESSION_SECRET)
 redis        = require 'redis'
 RedisStore   = require('connect-redis')(session)
 url          = require 'url'
+passport     = require 'passport'
 
 # routes
 routes       = require './routes/index'
@@ -61,6 +62,9 @@ app.use session(
   secret: process.env.SESSION_SECRET
   store:  sessionStore
 )
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use express.static(path.join(__dirname, 'public'))
 
 app.use '/',        routes

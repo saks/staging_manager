@@ -38,6 +38,7 @@
     "node-sass": "^0.9.3",
     "nodemon": "*",
     "passport": "^0.2.1",
+    "passport-github": "^0.1.5",
     "passport.socketio": "^3.3.0",
     "promise": "~5.0.0",
     "redis": "~0.12.1",
