@@ -37,6 +37,8 @@
     "newrelic": "^1.11.0",
     "node-sass": "^0.9.3",
     "nodemon": "*",
+    "passport": "^0.2.1",
+    "passport.socketio": "^3.3.0",
     "promise": "~5.0.0",
     "redis": "~0.12.1",
     "request": "~2.40.0",

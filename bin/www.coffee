@@ -1,5 +1,5 @@
-unless process.env.COOKIE_SECRET
-  process.env.COOKIE_SECRET = 'bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4'
+# unless process.env.COOKIE_SECRET
+#   process.env.COOKIE_SECRET = 'bC7BEZ5MVzfZmjgeSufcZwP5RcZyUWrWazKIkoovyT6J56sM0l0QvZQvOhtJs9X4'
 
 unless process.env.SESSION_SECRET
   process.env.SESSION_SECRET = 'P9O9QyedWcUAmwRr6HkkS5DZvmqFGoLRrm17UsIavkXwurskrJIbbUDQnrgkSar2'
@@ -21,54 +21,40 @@ User = mongoose.model 'User'
 Server = mongoose.model 'Server'
 
 sessionStore = app.locals.sessionStore
-cookieParser = app.locals.cookieParser
+cookieParser = require('cookie-parser')
 
-io.set('authorization', (data, callback) ->
-  if not data.headers.cookie
-    console.log 'No cookie transmitted.'
-    return callback('No cookie transmitted.', false)
+passportSocketIo = require("passport.socketio")
 
-  # We use the Express cookieParser created before to parse the cookie
-  # Express cookieParser(req, res, next) is used initialy to parse data in "req.headers.cookie".
-  # Here our cookies are stored in "data.headers.cookie", so we just pass "data" to the first argument of function
-  cookieParser(data, {}, (parseErr) ->
-    if parseErr
-      console.log 'Error parsing cookies.'
-      return callback('Error parsing cookies.', false)
+onAuthorizeSuccess = (data, accept) ->
+  console.log 'auth success'
+  accept()
 
-    # Get the SID cookie
-    sidCookie = (data.secureCookies && data.secureCookies[EXPRESS_SID_KEY]) or
-      (data.signedCookies && data.signedCookies[EXPRESS_SID_KEY]) or
-      (data.cookies && data.cookies[EXPRESS_SID_KEY])
+onAuthorizeFail = (data, message, error, accept) ->
+  console.log message, error
+  console.log 'auth fail'
 
-    sidCookie = signature.unsign(sidCookie.slice(2), process.env.SESSION_SECRET)
+passportStub = {
+  _userProperty:   'user'
+  _key:            'passport'
+  deserializeUser: (user, callback) ->
+    User.current user.id, (err, currentUser) ->
+      callback err, currentUser
+}
 
-    # Then we just need to load the session from the Express Session Store
-    sessionStore.load(sidCookie, (err, session) ->
-      # And last, we check if the used has a valid session and if he is logged in
-      if (err or not session or not session.user_id)
-        console.log 'Not logged in.'
-        callback('Not logged in.', false)
-      else
-        # If you want, you can attach the session to the handshake data, so you can use it again later
-        # You can access it later with "socket.handshake.session"
-
-        User.current session.user_id, (err, currentUser) ->
-          if not err and currentUser
-            data.session = session
-            data.currentUser = currentUser
-            callback null, true
-          else
-            console.log 'Not logged in.'
-            callback('Not logged in.', false)
-    )
-  )
-)
+io.use(passportSocketIo.authorize({
+  passport:     passportStub,
+  cookieParser: cookieParser,
+  key:         EXPRESS_SID_KEY,       # the name of the cookie where express/connect stores its session_id
+  secret:      process.env.SESSION_SECRET,    # the session_secret to parse the cookie
+  store:       sessionStore,        # we NEED to use a sessionstore. no memorystore please
+  success:     onAuthorizeSuccess,  # *optional* callback on success - read more below
+  fail:        onAuthorizeFail,     # *optional* callback on fail/error - read more below
+}))
 
 
 io.on('connection', (socket) ->
   request     = socket.conn.request
-  currentUser = request.currentUser
+  currentUser = request[passportStub._userProperty]
   console.log "connected user #{currentUser.verboseName()}"
 
   socket.on '/servers/lock', (data) ->

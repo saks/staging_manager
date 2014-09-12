@@ -13,11 +13,10 @@ isAuthenticated = (request, response, next) ->
 
   session = request.session
 
-  unless session.user_id
-    response.redirect '/'
-    return
+  unless session.passport
+    return response.redirect '/'
 
-  User.current session.user_id, (err, currentUser) ->
+  User.current session.passport.user.id, (err, currentUser) ->
     if not err and currentUser
       response.locals.currentUser = currentUser
       return next()
