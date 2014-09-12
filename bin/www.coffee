@@ -41,10 +41,28 @@ io.use(passportSocketIo.authorize({
   fail:        onAuthorizeFail,     # *optional* callback on fail/error - read more below
 }))
 
+class SocketRegistry
+  constructor: ->
+    @registry = {}
+
+  push: (userId, socket) ->
+    unless @registry[userId]
+      @registry[userId] = []
+
+    @registry[userId].push socket
+
+  pop: (userId) ->
+    if @registry[userId]
+      @registry[userId].forEach (socket) ->
+        console.log "disconnect user #{socket.conn.request.user.verboseName()}"
+        socket.disconnect()
+
+socketRegistry = app.locals.socketRegistry = new SocketRegistry
 
 io.on('connection', (socket) ->
   request     = socket.conn.request
   currentUser = request.user
+  socketRegistry.push currentUser.id, socket
   console.log "connected user #{currentUser.verboseName()}"
 
   socket.on '/servers/lock', (data) ->
