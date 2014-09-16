@@ -98,11 +98,12 @@ block content
             <p>deployed by: {{deployedBy}}</p>
             <p>at: {{formatDate deployedAt}}</p>
             <p class='branch'>branch: {{branchName}}</p>
+
             {{#if locked}}
               <p>locked by: {{locked_by_name}}</p>
               <p>at: {{formatDate locked_at}}</p>
             {{else}}
-            <p>free to lock</p>
+            <p>available for locking</p>
             <p>&nbsp;</p>
             {{/if}}
           </div>
